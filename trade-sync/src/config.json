@@ -1,0 +1,6 @@
+{
+  "firebase": {
+    "databaseURL": "https://zorro-fire-log.firebaseio.com"
+  },
+  "tradeLogs": [{ "path": "./test/demotrades.csv", "alias": "demo" }]
+}
