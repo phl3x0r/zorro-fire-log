@@ -1,0 +1,46 @@
+<div class="container">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Algos
+      </mat-panel-title>
+      <mat-panel-description>
+        Select algos to display
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <section
+      class="section"
+      *ngIf="algosAndSymbols.algos && algosAndSymbols.algos.length"
+    >
+      <mat-checkbox
+        class="checkbox"
+        *ngFor="let algo of algosAndSymbols.algos"
+        [(ngModel)]="checked.algos[algo]"
+        (change)="this.filter.emit(checked)"
+        >{{ algo }}</mat-checkbox
+      >
+    </section>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Symbols
+      </mat-panel-title>
+      <mat-panel-description>
+        Select symbols to display
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <section
+      class="section"
+      *ngIf="algosAndSymbols.symbols && algosAndSymbols.symbols.length"
+    >
+      <mat-checkbox
+        class="checkbox"
+        *ngFor="let symbol of algosAndSymbols.symbols"
+        [(ngModel)]="checked.symbols[symbol]"
+        (change)="this.filter.emit(checked)"
+        >{{ symbol }}</mat-checkbox
+      >
+    </section>
+  </mat-expansion-panel>
+</div>

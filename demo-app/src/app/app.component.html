@@ -1,0 +1,22 @@
+<div class="container">
+  <app-algo-selector
+    [algosAndSymbols]="algosAndSymbols$ | async"
+    (filter)="applyFilter($event)"
+  ></app-algo-selector>
+  <mat-card style="height: 70vh;">
+    <mat-tab-group backgroundColor="primary">
+      <mat-tab color="primary" label="Chart"
+        ><div class="tab-content" (resized)="onResized($event)">
+          <app-line-chart
+            *ngIf="dimensions"
+            [dimensions]="dimensions"
+            [chartPoints]="chartPoints$ | async"
+          ></app-line-chart></div
+      ></mat-tab>
+      <mat-tab label="Second">
+        <div class="tab-content">Content 2</div></mat-tab
+      >
+      <mat-tab label="Third"><div class="tab-content">Content 3</div></mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>

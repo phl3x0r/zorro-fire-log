@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  height: 70vh;
+  flex-direction: column;
+  mat-expansion-panel {
+    margin: 10px;
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox {
+  margin: 0 10px;
+}

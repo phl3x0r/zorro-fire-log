@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "zorro-fire-log": {
+      "hosting": {
+        "demo-app": [
+          "zorro-fire-log"
+        ]
+      }
+    }
+  }
+}

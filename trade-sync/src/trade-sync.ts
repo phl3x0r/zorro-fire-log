@@ -63,7 +63,7 @@ if (config.tradeLogs && config.tradeLogs.length) {
           };
           admin
             .firestore()
-            .collection("tradeLogs")
+            .collection(tl.alias)
             .doc((tl.alias || tl.path) + "-" + entry.ID)
             .set(entry)
             .then(function () {
