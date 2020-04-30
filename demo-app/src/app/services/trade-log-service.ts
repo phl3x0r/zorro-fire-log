@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { TradeLogEntry, AlgosAndSymbols, Filter } from '@zfl/models';
-import { scan, map, filter, switchMap, tap, shareReplay } from 'rxjs/operators';
+import { scan, map, filter, switchMap, shareReplay } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { ChartDataSets, ChartPoint } from 'chart.js';
+import { ChartDataSets } from 'chart.js';
 
 @Injectable({ providedIn: 'root' })
 export class TradeLogService {
@@ -19,7 +19,7 @@ export class TradeLogService {
     switchMap((flter: Filter) =>
       this.tradeLogs$.pipe(
         map((tls) =>
-          tls.filter((tl) => flter.algos[tl.Name] && flter.symbols[tl.Asset])
+          tls.filter((tl) => flter.algos[tl.name] && flter.symbols[tl.asset])
         ),
         filter((tls) => tls && !!tls.length),
         map((tls) => {
@@ -27,16 +27,16 @@ export class TradeLogService {
             if (!acc['total']) {
               acc['total'] = [];
             }
-            if (!acc[cur.Name]) {
-              acc[cur.Name] = [];
+            if (!acc[cur.name]) {
+              acc[cur.name] = [];
             }
-            acc[cur.Name].push({
-              x: cur.Close.toDate().toLocaleString(),
-              y: cur.Profit + (acc[cur.Name][acc[cur.Name].length - 1]?.y || 0),
+            acc[cur.name].push({
+              x: cur.close.toDate().toLocaleString(),
+              y: cur.profit + (acc[cur.name][acc[cur.name].length - 1]?.y || 0),
             });
             acc['total'].push({
-              x: cur.Close.toDate().toLocaleString(),
-              y: cur.Profit + (acc['total'][acc['total'].length - 1]?.y || 0),
+              x: cur.close.toDate().toLocaleString(),
+              y: cur.profit + (acc['total'][acc['total'].length - 1]?.y || 0),
             });
             return acc;
           }, <ChartDataSets[]>{});
@@ -56,11 +56,11 @@ export class TradeLogService {
     scan(
       (acc, cur) => {
         cur.forEach((tl) => {
-          if (!acc.algos.includes(tl.Name)) {
-            acc.algos.push(tl.Name);
+          if (!acc.algos.includes(tl.name)) {
+            acc.algos.push(tl.name);
           }
-          if (!acc.symbols.includes(tl.Asset)) {
-            acc.symbols.push(tl.Asset);
+          if (!acc.symbols.includes(tl.asset)) {
+            acc.symbols.push(tl.asset);
           }
         });
         return acc;

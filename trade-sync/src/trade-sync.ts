@@ -13,18 +13,18 @@ interface Config {
 }
 
 interface LogEntry {
-  Name: string;
-  Type: string;
-  Asset: string;
-  ID: number;
-  Lots: number;
-  Open: admin.firestore.Timestamp;
-  Close: admin.firestore.Timestamp;
-  Entry: number;
-  Exit: number;
-  Profit: number;
-  Roll: number;
-  ExitType: string;
+  name: string;
+  type: string;
+  asset: string;
+  id: number;
+  lots: number;
+  open: admin.firestore.Timestamp;
+  close: admin.firestore.Timestamp;
+  entry: number;
+  exit: number;
+  profit: number;
+  roll: number;
+  exitType: string;
 }
 
 const config: Config = require("./config.json");
@@ -49,18 +49,18 @@ if (config.tradeLogs && config.tradeLogs.length) {
         const parts = line.split(",");
         if (parts.length === 12 && parts[0].toLowerCase() !== "name") {
           const entry: LogEntry = {
-            Name: parts[0],
-            Type: parts[1],
-            Asset: parts[2],
-            ID: Number.parseInt(parts[3]),
-            Lots: Number.parseFloat(parts[4]),
-            Open: admin.firestore.Timestamp.fromDate(new Date(parts[5])),
-            Close: admin.firestore.Timestamp.fromDate(new Date(parts[6])),
-            Entry: Number.parseFloat(parts[7]),
-            Exit: Number.parseFloat(parts[8]),
-            Profit: Number.parseFloat(parts[9]),
-            Roll: Number.parseFloat(parts[10]),
-            ExitType: parts[11],
+            name: parts[0],
+            type: parts[1],
+            asset: parts[2],
+            id: Number.parseInt(parts[3]),
+            lots: Number.parseFloat(parts[4]),
+            open: admin.firestore.Timestamp.fromDate(new Date(parts[5])),
+            close: admin.firestore.Timestamp.fromDate(new Date(parts[6])),
+            entry: Number.parseFloat(parts[7]),
+            exit: Number.parseFloat(parts[8]),
+            profit: Number.parseFloat(parts[9]),
+            roll: Number.parseFloat(parts[10]),
+            exitType: parts[11],
           };
           admin
             .firestore()
