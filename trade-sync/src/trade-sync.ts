@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import { Tail } from "tail";
+import { createHash } from "crypto";
 
 interface TradeLog {
   path: string;
@@ -64,7 +65,7 @@ if (config.tradeLogs && config.tradeLogs.length) {
           admin
             .firestore()
             .collection(tl.alias)
-            .doc((tl.alias || tl.path) + "-" + entry.ID)
+            .doc(createHash("md5").update(line).digest("hex"))
             .set(entry)
             .then(function () {
               console.log("Trade log written!");
