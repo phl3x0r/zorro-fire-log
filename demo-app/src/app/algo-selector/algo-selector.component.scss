@@ -1,17 +1,46 @@
 .container {
   display: flex;
   height: 70vh;
+  width: 15vw;
   flex-direction: column;
-  mat-expansion-panel {
-    margin: 10px;
-  }
 }
 
-.section {
+.alias,
+.algo,
+.symbol {
+  // margin-left: 10px;
   display: flex;
   flex-direction: column;
 }
 
-.checkbox {
-  margin: 0 10px;
+.alias {
+  padding: 8px;
+  padding-left: 10px;
+}
+
+.algo {
+  padding-left: 20px;
+  margin-left: -10px;
+  background-color: #fafafa;
+}
+
+.symbol {
+  padding-left: 20px;
+  margin-left: -10px;
+  background-color: #f5f5f5;
+}
+
+.count {
+  opacity: 0.4;
+}
+
+::ng-deep label {
+  width: 100%;
+  display: flex;
+}
+
+::ng-deep .mat-checkbox-label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }

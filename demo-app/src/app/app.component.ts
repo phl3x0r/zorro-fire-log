@@ -1,10 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { TradeLogEntry, TradeLog, Filter } from '@zfl/models';
-import { Observable } from 'rxjs';
+import { LogFilter } from '@zfl/models';
 import { ResizedEvent } from 'angular-resize-event';
-import { TradeLogService } from './services/trade-log-service';
-import { ChartDataSets } from 'chart.js';
+import { TradeLogsFacade } from './store/trade-logs.facade';
 
 @Component({
   selector: 'app-root',
@@ -13,12 +10,11 @@ import { ChartDataSets } from 'chart.js';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
-  public chartPoints$: Observable<ChartDataSets[]> = this.tradeLogService
-    .chartPoints$;
-  public algosAndSymbols$ = this.tradeLogService.algosAndSymbols$;
-  public dimensions: { height: number; width: number };
+  dimensions: { height: number; width: number };
+  logFilter$ = this.tradeLogsFacade.logFilter$;
+  chartPoints$ = this.tradeLogsFacade.chartPoints$;
 
-  constructor(private tradeLogService: TradeLogService) {}
+  constructor(private tradeLogsFacade: TradeLogsFacade) {}
 
   ngOnInit(): void {}
 
@@ -30,8 +26,7 @@ export class AppComponent implements OnInit {
       width: event.newWidth - 32,
     };
   }
-
-  applyFilter($event: Filter) {
-    this.tradeLogService.setFilter($event);
+  applyLogFilter($event: LogFilter) {
+    this.tradeLogsFacade.applyLogFilter($event);
   }
 }

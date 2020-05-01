@@ -12,10 +12,17 @@ import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTreeModule } from '@angular/material/tree';
 import { AlgoSelectorComponent } from './algo-selector/algo-selector.component';
 import { AngularResizedEventModule } from 'angular-resize-event';
 import { FormsModule } from '@angular/forms';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
+import { TradeLogEffects } from './store/trade-logs.effects';
+import { tradeLogsReducer } from './store/trade-logs.reducer';
 
 @NgModule({
   declarations: [AppComponent, LineChartComponent, AlgoSelectorComponent],
@@ -26,13 +33,21 @@ import { FormsModule } from '@angular/forms';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     ChartsModule,
+    MatIconModule,
     MatTabsModule,
+    MatTreeModule,
     MatCardModule,
     MatExpansionModule,
     MatFormFieldModule,
     MatInputModule,
     MatCheckboxModule,
     AngularResizedEventModule,
+    StoreModule.forRoot({ tradeLogs: tradeLogsReducer }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
+    EffectsModule.forRoot([TradeLogEffects]),
   ],
   providers: [],
   bootstrap: [AppComponent],

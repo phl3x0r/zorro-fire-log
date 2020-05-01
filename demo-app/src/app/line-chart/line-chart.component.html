@@ -5,7 +5,7 @@
   [style.width.px]="dimensions.width"
 >
   <canvas
-    *ngIf="lineChartData"
+    *ngIf="lineChartData && lineChartData.length"
     baseChart
     [datasets]="lineChartData"
     [options]="lineChartOptions"

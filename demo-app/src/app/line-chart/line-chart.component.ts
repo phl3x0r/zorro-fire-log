@@ -1,6 +1,6 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ChartDataSets, ChartOptions } from 'chart.js';
-import { Color, Label } from 'ng2-charts';
+import { Color } from 'ng2-charts';
 import * as Chart from 'chart.js';
 
 @Component({
@@ -17,7 +17,7 @@ export class LineChartComponent {
     this.lineChartData = data;
   }
 
-  lineChartData: ChartDataSets[];
+  lineChartData: ChartDataSets[] = [];
 
   public lineChartOptions: ChartOptions = {
     responsive: true,

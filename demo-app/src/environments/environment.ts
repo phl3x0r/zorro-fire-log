@@ -4,9 +4,17 @@
 
 export const environment = {
   production: false,
+  // your firebase setup goes here
   firebase: {
-    // YOUR FIREBASE STUFF GOES HERE
+    apiKey: '<your-key>',
+    authDomain: '<your-project-authdomain>',
+    databaseURL: '<your-database-URL>',
+    projectId: '<your-project-id>',
+    storageBucket: '<your-storage-bucket>',
+    messagingSenderId: '<your-messaging-sender-id>',
   },
+  // as list of trade logs. should match the aliases used in trade-sync
+  tradeLogs: ['example-1', 'example-2'],
 };
 
 /*

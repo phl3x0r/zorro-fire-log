@@ -1,5 +1,4 @@
 import * as firebase from 'firebase/app';
-import Timestamp = firebase.firestore.Timestamp;
 
 export interface TradeLogEntry {
   name: string;
@@ -7,23 +6,38 @@ export interface TradeLogEntry {
   asset: string;
   id: number;
   lots: number;
-  open: Timestamp;
-  close: Timestamp;
+  open: firebase.firestore.Timestamp;
+  close: firebase.firestore.Timestamp;
   entry: number;
   exit: number;
   profit: number;
   roll: number;
   exitType: string;
+  alias: string;
 }
 
 export type TradeLog = Array<TradeLogEntry>;
 
-export interface AlgosAndSymbols {
-  algos: string[];
-  symbols: string[];
+export interface SymbolFilter {
+  [key: string]: {
+    enabled: boolean;
+  };
 }
 
-export interface Filter {
-  algos: { [key: string]: boolean };
-  symbols: { [key: string]: boolean };
+export interface AlgoFilter {
+  [key: string]: {
+    enabled: boolean;
+    symbols?: SymbolFilter;
+  };
+}
+
+export interface AliasFilter {
+  [key: string]: {
+    enabled: boolean;
+    algos?: AlgoFilter;
+  };
+}
+
+export interface LogFilter {
+  aliases: AliasFilter;
 }

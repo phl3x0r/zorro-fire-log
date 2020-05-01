@@ -1,46 +1,51 @@
-<div class="container">
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Algos
-      </mat-panel-title>
-      <mat-panel-description>
-        Select algos to display
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <section
-      class="section"
-      *ngIf="algosAndSymbols.algos && algosAndSymbols.algos.length"
-    >
-      <mat-checkbox
-        class="checkbox"
-        *ngFor="let algo of algosAndSymbols.algos"
-        [(ngModel)]="checked.algos[algo]"
-        (change)="this.filter.emit(checked)"
-        >{{ algo }}</mat-checkbox
+<!--  -->
+<div class="container" [@.disabled]="isDisabled">
+  <div
+    *ngFor="let alias of nodes"
+    class="alias mat-elevation-z2"
+    (click)="toggleExpand($event, alias)"
+  >
+    <mat-checkbox
+      [checked]="alias.enabled"
+      (change)="handleChange($event, alias)"
+      >{{ alias.name }}
+      <span class="count"
+        >({{ (alias.children && alias.children.length) || 0 }})</span
+      ></mat-checkbox
+    ><ng-container *ngIf="alias.expanded">
+      <div
+        *ngFor="let algo of alias.children"
+        class="algo"
+        (click)="toggleExpand($event, algo)"
+        [@fold]
       >
-    </section>
-  </mat-expansion-panel>
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Symbols
-      </mat-panel-title>
-      <mat-panel-description>
-        Select symbols to display
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <section
-      class="section"
-      *ngIf="algosAndSymbols.symbols && algosAndSymbols.symbols.length"
+        <mat-checkbox
+          [disabled]="!alias.enabled"
+          [checked]="algo.enabled"
+          (change)="handleChange($event, algo)"
+          >{{ algo.name }}
+          <span class="count"
+            >({{ (algo.children && algo.children.length) || 0 }})</span
+          ></mat-checkbox
+        >
+        <ng-container *ngIf="algo.expanded">
+          <div
+            *ngFor="let symbol of algo.children"
+            class="symbol"
+            (click)="$event.stopPropagation()"
+            [@fold]
+          >
+            <mat-checkbox
+              [disabled]="!algo.enabled"
+              [checked]="symbol.enabled"
+              (change)="handleChange($event, symbol)"
+              (click)="$event.stopPropagation()"
+            >
+              {{ symbol.name }}</mat-checkbox
+            >
+          </div></ng-container
+        >
+      </div></ng-container
     >
-      <mat-checkbox
-        class="checkbox"
-        *ngFor="let symbol of algosAndSymbols.symbols"
-        [(ngModel)]="checked.symbols[symbol]"
-        (change)="this.filter.emit(checked)"
-        >{{ symbol }}</mat-checkbox
-      >
-    </section>
-  </mat-expansion-panel>
+  </div>
 </div>
