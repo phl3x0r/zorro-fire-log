@@ -33,6 +33,11 @@ export const environment = {
 };
 ```
 
+## Run development server
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+NOTE: the app will load trade log entries from your firestore on each reload and may incur quota costs or quota limitations. 
+
 ## Further help
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.3.
