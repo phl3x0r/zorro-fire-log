@@ -4,7 +4,6 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { ChartsModule } from 'ng2-charts';
 import { environment } from '../environments/environment';
 import { LineChartComponent } from './line-chart/line-chart.component';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -23,6 +22,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 import { TradeLogEffects } from './store/trade-logs.effects';
 import { tradeLogsReducer } from './store/trade-logs.reducer';
+import { ChartModule } from 'angular-highcharts';
 
 @NgModule({
   declarations: [AppComponent, LineChartComponent, AlgoSelectorComponent],
@@ -32,7 +32,6 @@ import { tradeLogsReducer } from './store/trade-logs.reducer';
     FormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    ChartsModule,
     MatIconModule,
     MatTabsModule,
     MatTreeModule,
@@ -42,6 +41,7 @@ import { tradeLogsReducer } from './store/trade-logs.reducer';
     MatInputModule,
     MatCheckboxModule,
     AngularResizedEventModule,
+    ChartModule,
     StoreModule.forRoot({ tradeLogs: tradeLogsReducer }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,

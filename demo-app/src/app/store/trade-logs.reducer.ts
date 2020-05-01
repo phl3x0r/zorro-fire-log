@@ -8,8 +8,7 @@ import {
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { TradeLogEntry, LogFilter } from '@zfl/models';
 import { addTradeLogs, updateFilter } from './trade-logs.actions';
-import { ChartDataSets } from 'chart.js';
-import * as firebase from 'firebase/app';
+import { SeriesOptionsType } from 'highcharts';
 
 export interface TradeLogState extends EntityState<TradeLogEntry> {
   filter: LogFilter | null;
@@ -81,37 +80,27 @@ export const selectTradeLogsAsChartPoints = createSelector(
   selectTradeLogsByFilter,
   (tradeLogs) => {
     const reduced = tradeLogs.reduce((acc, cur) => {
-      if (!acc['total']) {
-        acc['total'] = [];
+      if (!acc['Total']) {
+        acc['Total'] = [];
       }
       if (!acc[cur.name]) {
         acc[cur.name] = [];
       }
       acc[cur.name].push({
-        x: new firebase.firestore.Timestamp(
-          cur.close.seconds,
-          cur.close.nanoseconds
-        )
-          .toDate()
-          .toLocaleString(),
+        x: cur.close.seconds * 1000,
         y: cur.profit + (acc[cur.name][acc[cur.name].length - 1]?.y || 0),
       });
-      acc['total'].push({
-        x: new firebase.firestore.Timestamp(
-          cur.close.seconds,
-          cur.close.nanoseconds
-        )
-          .toDate()
-          .toLocaleString(),
-        y: cur.profit + (acc['total'][acc['total'].length - 1]?.y || 0),
+      acc['Total'].push({
+        x: cur.close.seconds * 1000,
+        y: cur.profit + (acc['Total'][acc['Total'].length - 1]?.y || 0),
       });
       return acc;
-    }, <ChartDataSets[]>{});
+    }, <SeriesOptionsType[]>{});
     return [
       ...Object.keys(reduced).map((key) => ({
-        fill: false,
-        label: key,
+        name: key,
         data: reduced[key],
+        type: 'line',
       })),
     ];
   }
