@@ -1,0 +1,19 @@
+<div class="group-toggle" *ngIf="groupSettings">
+  <p>Group by:</p>
+
+  <mat-checkbox
+    [checked]="groupSettings.alias"
+    (change)="handleGroupChange('alias')"
+    >Alias</mat-checkbox
+  >
+  <mat-checkbox
+    [checked]="groupSettings.algo"
+    (change)="handleGroupChange('algo')"
+    >Algo</mat-checkbox
+  >
+  <mat-checkbox
+    [checked]="groupSettings.symbol"
+    (change)="handleGroupChange('symbol')"
+    >Symbol</mat-checkbox
+  >
+</div>

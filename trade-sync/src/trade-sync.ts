@@ -31,7 +31,6 @@ const config: Config = require("./config.json");
 const serviceAccount = require("./serviceAccountKey.json");
 
 const args = process.argv.slice(2);
-console.log(args);
 
 admin.initializeApp({
   ...config.firebase,

@@ -1,13 +1,16 @@
-import * as firebase from 'firebase/app';
+export interface Timestamp {
+  seconds: number;
+  nanoseconds: number;
+}
 
 export interface TradeLogEntry {
   name: string;
   type: string;
   asset: string;
-  id: number;
+  id: string;
   lots: number;
-  open: firebase.firestore.Timestamp;
-  close: firebase.firestore.Timestamp;
+  open: Timestamp;
+  close: Timestamp;
   entry: number;
   exit: number;
   profit: number;
@@ -40,4 +43,10 @@ export interface AliasFilter {
 
 export interface LogFilter {
   aliases: AliasFilter;
+}
+
+export interface GroupSettings {
+  alias: boolean;
+  algo: boolean;
+  symbol: boolean;
 }

@@ -1,31 +1,48 @@
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { addTradeLogs, updateFilter } from './trade-logs.actions';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { map, withLatestFrom, tap, delay } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { TradeLogEntry } from '@zfl/models';
 import { environment } from '../../environments/environment';
-import { merge } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { merge, iif, of } from 'rxjs';
+import { Injectable, Inject } from '@angular/core';
 import { TradeLogState, selectFilter } from './trade-logs.reducer';
 import { Store } from '@ngrx/store';
+import { useMockData } from '../tokens/tokens';
+import { mockTradeLogs } from '../../mockdata/mock-tradelogs';
 
 @Injectable()
 export class TradeLogEffects {
   constructor(
     private firestore: AngularFirestore,
     private store: Store<TradeLogState>,
-    private actions$: Actions
+    private actions$: Actions,
+    @Inject(useMockData) private useMockData: boolean
   ) {}
 
   onTradeLogUpdate$ = createEffect(() =>
-    merge(
-      ...environment.tradeLogs.map((tl) =>
-        this.firestore
-          .collection<TradeLogEntry>(tl, (ref) => ref.orderBy('close'))
-          .valueChanges({ idField: 'id' })
-          .pipe(map((entries) => entries.map((e) => ({ ...e, alias: tl }))))
+    iif(
+      () => this.useMockData,
+      of(
+        addTradeLogs({
+          tradeLogs: mockTradeLogs,
+        })
+      ).pipe(
+        delay(500),
+        tap(() => console.warn('Using MOCKED data'))
+      ),
+      merge(
+        ...environment.tradeLogs.map((tl) =>
+          this.firestore
+            .collection<TradeLogEntry>(tl, (ref) => ref.orderBy('close'))
+            .valueChanges({ idField: 'id' })
+            .pipe(map((entries) => entries.map((e) => ({ ...e, alias: tl }))))
+        )
+      ).pipe(
+        tap(() => console.warn('Using LIVE data')),
+        map((tradeLogs) => addTradeLogs({ tradeLogs }))
       )
-    ).pipe(map((tradeLogs) => addTradeLogs({ tradeLogs })))
+    )
   );
 
   onAddTradeLogs$ = createEffect(() =>

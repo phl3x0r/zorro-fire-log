@@ -6,18 +6,28 @@ import {
   createSelector,
 } from '@ngrx/store';
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { TradeLogEntry, LogFilter } from '@zfl/models';
-import { addTradeLogs, updateFilter } from './trade-logs.actions';
+import { TradeLogEntry, LogFilter, GroupSettings } from '@zfl/models';
+import {
+  addTradeLogs,
+  updateFilter,
+  updateGroupSettings,
+} from './trade-logs.actions';
 import { SeriesOptionsType } from 'highcharts';
 
 export interface TradeLogState extends EntityState<TradeLogEntry> {
   filter: LogFilter | null;
+  groupSettings: GroupSettings;
 }
 export const adapter: EntityAdapter<TradeLogEntry> = createEntityAdapter<
   TradeLogEntry
 >();
 export const initialState: TradeLogState = adapter.getInitialState({
   filter: { aliases: {} },
+  groupSettings: {
+    alias: false,
+    algo: true,
+    symbol: false,
+  },
 });
 export const featureSelectorKey = 'tradeLogs';
 
@@ -31,6 +41,10 @@ export const tradeLogsReducer = createReducer(
   on(updateFilter, (state, { filter }) => ({
     ...state,
     filter,
+  })),
+  on(updateGroupSettings, (state, { groupSettings }) => ({
+    ...state,
+    groupSettings,
   }))
 );
 
@@ -52,6 +66,11 @@ export const {
 export const selectFilter = createSelector(
   selectTradeLogState,
   (state: TradeLogState) => state.filter
+);
+
+export const selectGroupSettings = createSelector(
+  selectTradeLogState,
+  (state) => state.groupSettings
 );
 
 export const selectTradeLogsSorted = createSelector(
@@ -78,17 +97,30 @@ export const selectTradeLogsByFilter = createSelector(
 
 export const selectTradeLogsAsChartPoints = createSelector(
   selectTradeLogsByFilter,
-  (tradeLogs) => {
+  selectGroupSettings,
+  (tradeLogs, groupSettings) => {
+    const getGroupName = (tle: TradeLogEntry) =>
+      [
+        groupSettings.alias ? tle.alias : null,
+        groupSettings.algo ? tle.name : null,
+        groupSettings.symbol ? tle.asset : null,
+      ]
+        .filter((g) => !!g)
+        .reduce(
+          (acc, cur, index) => (acc += cur && (index ? '|' + cur : cur)),
+          ''
+        );
     const reduced = tradeLogs.reduce((acc, cur) => {
+      const groupName = getGroupName(cur);
       if (!acc['Total']) {
         acc['Total'] = [];
       }
-      if (!acc[cur.name]) {
-        acc[cur.name] = [];
+      if (!acc[groupName]) {
+        acc[groupName] = [];
       }
-      acc[cur.name].push({
+      acc[groupName].push({
         x: cur.close.seconds * 1000,
-        y: cur.profit + (acc[cur.name][acc[cur.name].length - 1]?.y || 0),
+        y: cur.profit + (acc[groupName][acc[groupName].length - 1]?.y || 0),
       });
       acc['Total'].push({
         x: cur.close.seconds * 1000,

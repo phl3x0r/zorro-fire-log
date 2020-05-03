@@ -1,0 +1,6 @@
+<div class="toolbar alias mat-elevation-z2">
+  <app-group-toggle
+    [groupSettings]="groupSettings$ | async"
+    (groupChange)="updateGroupSettings($event)"
+  ></app-group-toggle>
+</div>

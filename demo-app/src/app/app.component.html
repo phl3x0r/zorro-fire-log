@@ -1,9 +1,10 @@
+<app-toolbar></app-toolbar>
 <div class="container">
   <app-algo-selector
     [logFilter]="logFilter$ | async"
     (logFilterChange)="applyLogFilter($event)"
   ></app-algo-selector>
-  <mat-card style="height: 70vh;">
+  <mat-card style="height: 70vh;" class="content-card">
     <mat-tab-group backgroundColor="primary">
       <mat-tab color="primary" label="Chart"
         ><div class="tab-content" (resized)="onResized($event)">

@@ -23,9 +23,18 @@ import { EffectsModule } from '@ngrx/effects';
 import { TradeLogEffects } from './store/trade-logs.effects';
 import { tradeLogsReducer } from './store/trade-logs.reducer';
 import { ChartModule } from 'angular-highcharts';
+import { ToolbarComponent } from './toolbar/toolbar.component';
+import { GroupToggleComponent } from './toolbar/group-toggle/group-toggle.component';
+import { useMockData } from './tokens/tokens';
 
 @NgModule({
-  declarations: [AppComponent, LineChartComponent, AlgoSelectorComponent],
+  declarations: [
+    AppComponent,
+    LineChartComponent,
+    AlgoSelectorComponent,
+    ToolbarComponent,
+    GroupToggleComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -49,7 +58,12 @@ import { ChartModule } from 'angular-highcharts';
     }),
     EffectsModule.forRoot([TradeLogEffects]),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: useMockData,
+      useFactory: () => !!environment.useMockData,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

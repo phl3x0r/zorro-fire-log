@@ -13,7 +13,6 @@ export class LineChartComponent {
   @Input() public dimensions: { height: number; width: number };
   chart: Chart;
   @Input() set chartPoints(series: SeriesOptionsType[]) {
-    console.log(series);
     this.chart = new Chart({
       chart: {
         type: 'line',
@@ -32,6 +31,5 @@ export class LineChartComponent {
       },
       series,
     });
-    console.log(this.dimensions);
   }
 }
