@@ -16,6 +16,7 @@ export class LineChartComponent {
     this.chart = new Chart({
       chart: {
         type: 'line',
+        zoomType: 'x',
       },
       xAxis: {
         type: 'datetime',
