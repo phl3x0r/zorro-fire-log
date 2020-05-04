@@ -13,10 +13,14 @@ export class ToolbarComponent implements OnInit {
   constructor(private tradeLogsFacade: TradeLogsFacade) {}
   groupSettings$: Observable<GroupSettings> = this.tradeLogsFacade
     .groupSettings$;
-
+  portfolioSize$: Observable<number> = this.tradeLogsFacade.porfolioSize$;
   ngOnInit(): void {}
 
   updateGroupSettings(groupSettings: GroupSettings) {
     this.tradeLogsFacade.updateGroupSettings(groupSettings);
+  }
+
+  updatePortfolioSize(portfolioSize: number) {
+    this.tradeLogsFacade.updatePortfolioSize(portfolioSize);
   }
 }

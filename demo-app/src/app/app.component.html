@@ -17,9 +17,10 @@
           </ng-container>
         </div>
       </mat-tab>
-      <mat-tab label="Second">
-        <div class="tab-content">Content 2</div></mat-tab
-      >
+      <mat-tab label="Statistics">
+        <div class="tab-content">
+          <app-stats-table [data]="statistics$ | async"></app-stats-table></div
+      ></mat-tab>
       <mat-tab label="Third"><div class="tab-content">Content 3</div></mat-tab>
     </mat-tab-group>
   </mat-card>

@@ -13,6 +13,7 @@ export class AppComponent implements OnInit {
   dimensions: { height: number; width: number };
   logFilter$ = this.tradeLogsFacade.logFilter$;
   chartPoints$ = this.tradeLogsFacade.chartPoints$;
+  statistics$ = this.tradeLogsFacade.statistics$;
 
   constructor(private tradeLogsFacade: TradeLogsFacade) {}
 

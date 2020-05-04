@@ -6,17 +6,25 @@ import {
   createSelector,
 } from '@ngrx/store';
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { TradeLogEntry, LogFilter, GroupSettings } from '@zfl/models';
+import {
+  TradeLogEntry,
+  LogFilter,
+  GroupSettings,
+  StatisticsModel,
+} from '@zfl/models';
 import {
   addTradeLogs,
   updateFilter,
   updateGroupSettings,
+  updatePortfolioSize,
 } from './trade-logs.actions';
 import { SeriesOptionsType } from 'highcharts';
+import * as math from 'mathjs';
 
 export interface TradeLogState extends EntityState<TradeLogEntry> {
   filter: LogFilter | null;
   groupSettings: GroupSettings;
+  portfolioSize: number;
 }
 export const adapter: EntityAdapter<TradeLogEntry> = createEntityAdapter<
   TradeLogEntry
@@ -28,6 +36,7 @@ export const initialState: TradeLogState = adapter.getInitialState({
     algo: true,
     symbol: false,
   },
+  portfolioSize: 10000,
 });
 export const featureSelectorKey = 'tradeLogs';
 
@@ -45,6 +54,10 @@ export const tradeLogsReducer = createReducer(
   on(updateGroupSettings, (state, { groupSettings }) => ({
     ...state,
     groupSettings,
+  })),
+  on(updatePortfolioSize, (state, { portfolioSize }) => ({
+    ...state,
+    portfolioSize,
   }))
 );
 
@@ -73,6 +86,11 @@ export const selectGroupSettings = createSelector(
   (state) => state.groupSettings
 );
 
+export const selectPortfolioSize = createSelector(
+  selectTradeLogState,
+  (state) => state.portfolioSize
+);
+
 export const selectTradeLogsSorted = createSelector(
   selectAllTradeLogs,
   (tradeLogs) => tradeLogs.sort((a, b) => a.close.seconds - b.close.seconds)
@@ -95,7 +113,7 @@ export const selectTradeLogsByFilter = createSelector(
     }, <TradeLogEntry[]>[])
 );
 
-export const selectTradeLogsAsChartPoints = createSelector(
+export const selectTradeLogsData = createSelector(
   selectTradeLogsByFilter,
   selectGroupSettings,
   (tradeLogs, groupSettings) => {
@@ -121,19 +139,46 @@ export const selectTradeLogsAsChartPoints = createSelector(
       acc[groupName].push({
         x: cur.close.seconds * 1000,
         y: cur.profit + (acc[groupName][acc[groupName].length - 1]?.y || 0),
+        z: cur.profit,
       });
       acc['Total'].push({
         x: cur.close.seconds * 1000,
         y: cur.profit + (acc['Total'][acc['Total'].length - 1]?.y || 0),
+        z: cur.profit,
       });
       return acc;
     }, <SeriesOptionsType[]>{});
-    return [
-      ...Object.keys(reduced).map((key) => ({
-        name: key,
-        data: reduced[key],
-        type: 'line',
-      })),
-    ];
+    return reduced;
   }
+);
+
+export const selectTradeLogsAsChartPoints = createSelector(
+  selectTradeLogsData,
+  (reduced) => [
+    ...Object.keys(reduced).map((key) => ({
+      name: key,
+      data: reduced[key],
+      type: 'line',
+    })),
+  ]
+);
+
+// TODO: calculate some more statistics here
+export const selectTradeLogStatistics = createSelector(
+  selectTradeLogsData,
+  selectPortfolioSize,
+  (reduced, portfolioSize) =>
+    [
+      ...Object.keys(reduced).map(
+        (key) =>
+          <StatisticsModel>{
+            name: key,
+            totalPnL: reduced[key][reduced[key].length - 1]?.y || 0,
+            volatility:
+              (math.std(reduced[key].map((point) => point.z)) *
+                Math.sqrt(252)) /
+              portfolioSize,
+          }
+      ),
+    ] as StatisticsModel[]
 );

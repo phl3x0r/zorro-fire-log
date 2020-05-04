@@ -3,4 +3,8 @@
     [groupSettings]="groupSettings$ | async"
     (groupChange)="updateGroupSettings($event)"
   ></app-group-toggle>
+  <app-portfolio-settings
+    [portfolioSize]="portfolioSize$ | async"
+    (portfolioSizeChange)="updatePortfolioSize($event)"
+  ></app-portfolio-settings>
 </div>

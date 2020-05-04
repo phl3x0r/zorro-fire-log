@@ -1,0 +1,28 @@
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+    <td mat-cell *matCellDef="let stats">{{ stats.name }}</td>
+  </ng-container>
+
+  <!-- Total PnL Column -->
+  <ng-container matColumnDef="totalPnL">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Total PnL</th>
+    <td mat-cell *matCellDef="let stats">
+      {{ stats.totalPnL | number: "1.2-2" }}
+    </td>
+  </ng-container>
+
+  <!-- Volatility Column -->
+  <ng-container matColumnDef="volatility">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Annualised Volatility
+    </th>
+    <td mat-cell *matCellDef="let stats">
+      {{ stats.volatility | number: "1.2-2" }}
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

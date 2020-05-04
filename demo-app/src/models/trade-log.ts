@@ -52,3 +52,11 @@ export interface GroupSettings {
   algo: boolean;
   symbol: boolean;
 }
+
+export interface StatisticsModel {
+  name: string;
+  totalPnL: number;
+  volatility: number;
+}
+
+export type Statistics = Array<StatisticsModel>;

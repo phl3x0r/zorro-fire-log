@@ -15,3 +15,8 @@ export const updateGroupSettings = createAction(
   '[TradeLogs] Update group settings',
   props<{ groupSettings: GroupSettings }>()
 );
+
+export const updatePortfolioSize = createAction(
+  '[TradeLogs] Update Portfolio Size',
+  props<{ portfolioSize: number }>()
+);
