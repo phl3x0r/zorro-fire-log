@@ -11,6 +11,8 @@ import {
   LogFilter,
   GroupSettings,
   StatisticsModel,
+  DataCollection,
+  DataSet,
 } from '@zfl/models';
 import {
   addTradeLogs,
@@ -147,7 +149,7 @@ export const selectTradeLogsData = createSelector(
         z: cur.profit,
       });
       return acc;
-    }, <SeriesOptionsType[]>{});
+    }, <DataCollection>{});
     return reduced;
   }
 );
@@ -164,21 +166,35 @@ export const selectTradeLogsAsChartPoints = createSelector(
 );
 
 // TODO: calculate some more statistics here
+const getDaysHeld = (dataset: DataSet) =>
+  (dataset[dataset.length - 1].x - dataset[0].x) / 1000 / 60 / 60 / 24;
 export const selectTradeLogStatistics = createSelector(
   selectTradeLogsData,
   selectPortfolioSize,
   (reduced, portfolioSize) =>
     [
-      ...Object.keys(reduced).map(
-        (key) =>
-          <StatisticsModel>{
-            name: key,
-            totalPnL: reduced[key][reduced[key].length - 1]?.y || 0,
-            volatility:
-              (math.std(reduced[key].map((point) => point.z)) *
-                Math.sqrt(252)) /
-              portfolioSize,
-          }
-      ),
+      ...Object.keys(reduced).map((key) => {
+        const dataset = reduced[key];
+        const returns = dataset.map((point) => point.z);
+        const std = math.std(returns);
+        const pnl = dataset[dataset.length - 1]?.y || 0;
+        const daysHeld = getDaysHeld(dataset);
+        const ar = (1 + pnl) * (365 / daysHeld) - 1;
+        const cagr = (ar + portfolioSize) / portfolioSize - 1;
+        const vol = (std * Math.sqrt(252)) / portfolioSize;
+        const mr = pnl / dataset.length;
+        const sharpe = mr / std;
+        return <StatisticsModel>{
+          name: key,
+          pnl,
+          daysHeld,
+          ar,
+          cagr,
+          std,
+          vol,
+          mr,
+          sharpe,
+        };
+      }),
     ] as StatisticsModel[]
 );

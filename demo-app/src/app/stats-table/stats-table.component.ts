@@ -21,7 +21,17 @@ export class StatsTableComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  displayedColumns: string[] = ['name', 'totalPnL', 'volatility'];
+  displayedColumns: string[] = [
+    'name',
+    'pnl',
+    'daysHeld',
+    'ar',
+    'cagr',
+    'std',
+    'vol',
+    'mr',
+    'sharpe',
+  ];
   dataSource = new MatTableDataSource<StatisticsModel>([]);
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;

@@ -53,10 +53,26 @@ export interface GroupSettings {
   symbol: boolean;
 }
 
+export type DataSet = Array<{
+  x: number;
+  y: number;
+  z: number;
+}>;
+
+export interface DataCollection {
+  [key: string]: DataSet;
+}
+
 export interface StatisticsModel {
   name: string;
-  totalPnL: number;
-  volatility: number;
+  pnl: number; // profit and loss
+  daysHeld: number;
+  ar: number; // Annualized return
+  cagr: number; // CAGR
+  std: number; // standard deviation
+  vol: number; // annualized volatility
+  mr: number; // mean return
+  sharpe: number; // sharpe
 }
 
 export type Statistics = Array<StatisticsModel>;
