@@ -30,7 +30,7 @@
     "angular-resize-event": "^1.2.1",
     "firebase": "^7.14.2-0",
     "highcharts": "^8.0.4",
-    "mathjs": "^6.6.4",
+    "mathjs": "^6.6.5",
     "ngrx": "0.0.1-security",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
