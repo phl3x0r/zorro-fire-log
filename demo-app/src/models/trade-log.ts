@@ -30,6 +30,7 @@ export interface SymbolFilter {
 export interface AlgoFilter {
   [key: string]: {
     enabled: boolean;
+    expanded: boolean;
     symbols?: SymbolFilter;
   };
 }
@@ -37,6 +38,7 @@ export interface AlgoFilter {
 export interface AliasFilter {
   [key: string]: {
     enabled: boolean;
+    expanded: boolean;
     algos?: AlgoFilter;
   };
 }

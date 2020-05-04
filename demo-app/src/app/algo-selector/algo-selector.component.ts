@@ -43,13 +43,13 @@ export class AlgoSelectorComponent {
         <Node>{
           name: alias[0],
           enabled: alias[1].enabled,
-          expanded: alias[1].enabled,
+          expanded: alias[1].expanded,
           children: Object.entries(alias[1].algos).map(
             (algo) =>
               <Node>{
                 name: algo[0],
                 enabled: algo[1].enabled,
-                expanded: algo[1].enabled,
+                expanded: algo[1].expanded,
                 children: Object.entries(algo[1].symbols).map(
                   (symbol) =>
                     <Node>{
@@ -78,9 +78,11 @@ export class AlgoSelectorComponent {
       aliases: this.nodes.reduce((aliasacc, alias) => {
         aliasacc[alias.name] = {
           enabled: alias.enabled,
+          expanded: alias.expanded,
           algos: alias.children.reduce((algoacc, algo) => {
             algoacc[algo.name] = {
               enabled: algo.enabled,
+              expanded: algo.expanded,
               symbols: algo.children.reduce((symbolacc, symbol) => {
                 symbolacc[symbol.name] = { enabled: symbol.enabled };
                 return symbolacc;

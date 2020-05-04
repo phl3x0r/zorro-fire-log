@@ -9,6 +9,7 @@
       <mat-checkbox
         [checked]="alias.enabled"
         (change)="handleChange($event, alias)"
+        (click)="$event.stopPropagation()"
         >{{ alias.name }} </mat-checkbox
       ><span class="count"
         >({{ (alias.children && alias.children.length) || 0 }})</span
@@ -26,6 +27,7 @@
             [disabled]="!alias.enabled"
             [checked]="algo.enabled"
             (change)="handleChange($event, algo, true)"
+            (click)="$event.stopPropagation()"
             >{{ algo.name }} </mat-checkbox
           ><span class="count"
             >({{ (algo.children && algo.children.length) || 0 }})</span
