@@ -7,6 +7,7 @@
 cd into the demo-app directory and run
 
 ```sh
+$ cd demo-app
 $ npm install
 ```
 
