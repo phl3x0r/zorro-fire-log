@@ -1,2 +1,2 @@
 # zorro-fire-log
-A Zorro loggin framework
+A Zorro logging framework
