@@ -36,12 +36,17 @@
 }
 
 ::ng-deep label {
-  width: 100%;
   display: flex;
 }
 
 ::ng-deep .mat-checkbox-label {
+  display: flex;
+  justify-content: space-between;
+}
+
+.expansion-box {
   width: 100%;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
 }
