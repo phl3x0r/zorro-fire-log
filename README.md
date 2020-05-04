@@ -1,5 +1,5 @@
 # zorro-fire-log
-A Zorro loggin framework
+A Zorro logging framework
 
 ## trade-sync
 A script for synchronizing the Zorro trade logs to firebase firestore
