@@ -15,7 +15,7 @@ to install project dependencies.
 
 ### Setup environment
 
-replace the contents in src/environments/environment.ts to match your setup (and environment.prod.ts for production setups).
+replace the contents in `src/environments/environment.ts` to match your setup (and `environment.prod.ts` for production setups).
 
 ```js
 export const environment = {
