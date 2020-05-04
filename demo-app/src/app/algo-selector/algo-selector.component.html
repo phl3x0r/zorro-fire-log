@@ -25,7 +25,7 @@
           <mat-checkbox
             [disabled]="!alias.enabled"
             [checked]="algo.enabled"
-            (change)="handleChange($event, algo)"
+            (change)="handleChange($event, algo, true)"
             >{{ algo.name }} </mat-checkbox
           ><span class="count"
             >({{ (algo.children && algo.children.length) || 0 }})</span

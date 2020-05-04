@@ -68,8 +68,10 @@ export class AlgoSelectorComponent {
 
   constructor() {}
 
-  handleChange($event: MatCheckboxChange, node: Node) {
-    this.checkNode($event.checked, node);
+  handleChange($event: MatCheckboxChange, node: Node, all: boolean = false) {
+    if (all || !$event.checked) {
+      this.checkNode($event.checked, node);
+    }
     node.enabled = $event.checked;
     // this.enableByDescendant(this.nodes);
     const logFilter: LogFilter = {

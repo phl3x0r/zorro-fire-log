@@ -35,15 +35,6 @@
   opacity: 0.4;
 }
 
-::ng-deep label {
-  display: flex;
-}
-
-::ng-deep .mat-checkbox-label {
-  display: flex;
-  justify-content: space-between;
-}
-
 .expansion-box {
   width: 100%;
   display: flex;
