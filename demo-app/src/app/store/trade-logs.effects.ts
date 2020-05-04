@@ -61,13 +61,14 @@ export class TradeLogEffects {
               ...acc,
               aliases: {
                 ...acc.aliases,
-                [cur.alias]: { enabled: true, algos: {} },
+                [cur.alias]: { enabled: true, expanded: true, algos: {} },
               },
             };
           }
           if (!acc.aliases[cur.alias].algos[cur.name]) {
             acc.aliases[cur.alias].algos[cur.name] = {
               enabled: true,
+              expanded: false,
               symbols: {},
             };
           }
