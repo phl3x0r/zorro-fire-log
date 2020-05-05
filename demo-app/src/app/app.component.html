@@ -4,22 +4,22 @@
     [logFilter]="logFilter$ | async"
     (logFilterChange)="applyLogFilter($event)"
   ></app-algo-selector>
-  <mat-card style="height: 70vh;" class="content-card">
+  <mat-card class="content-card" (resized)="onResized($event)">
     <mat-tab-group backgroundColor="primary">
-      <mat-tab color="primary" label="Chart"
-        ><div class="tab-content" (resized)="onResized($event)">
-          <ng-container *ngIf="chartPoints$ | async; let chartPoints">
-            <app-line-chart
-              *ngIf="dimensions && chartPoints"
-              [dimensions]="dimensions"
-              [chartPoints]="chartPoints"
-            ></app-line-chart>
-          </ng-container>
-        </div>
+      <mat-tab color="primary" label="Chart">
+        <ng-container *ngIf="chartPoints$ | async; let chartPoints">
+          <app-line-chart
+            *ngIf="dimensions && chartPoints"
+            [dimensions]="dimensions"
+            [chartPoints]="chartPoints"
+          ></app-line-chart>
+        </ng-container>
       </mat-tab>
       <mat-tab label="Statistics">
-        <div class="tab-content">
-          <app-stats-table [data]="statistics$ | async"></app-stats-table></div
+        <app-stats-table
+          [data]="statistics$ | async"
+          [dimensions]="dimensions"
+        ></app-stats-table
       ></mat-tab>
       <mat-tab label="Third"><div class="tab-content">Content 3</div></mat-tab>
     </mat-tab-group>

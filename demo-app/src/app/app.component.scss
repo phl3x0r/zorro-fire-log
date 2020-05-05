@@ -1,14 +1,16 @@
 .container {
-  width: 100%;
   display: flex;
-  align-items: flex-start;
+  height: calc(100% - 148px);
+  position: relative;
 }
 
 .tab-content {
-  width: 60vw;
-  height: 60vh;
+  height: calc(100% - 20px);
 }
 
 .content-card {
   margin-left: 20px;
+  margin-right: 20px;
+  width: 100%;
+  height: calc(100% - 40px);
 }
