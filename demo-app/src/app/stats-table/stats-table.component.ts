@@ -16,6 +16,7 @@ import { Statistics, StatisticsModel } from '@zfl/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatsTableComponent implements OnInit {
+  @Input() public dimensions: { height: number; width: number };
   @Input() set data(data: Statistics) {
     this.dataSource.data = data;
     this.dataSource.sort = this.sort;
@@ -31,6 +32,7 @@ export class StatsTableComponent implements OnInit {
     'vol',
     'mr',
     'sharpe',
+    'exp',
   ];
   dataSource = new MatTableDataSource<StatisticsModel>([]);
 

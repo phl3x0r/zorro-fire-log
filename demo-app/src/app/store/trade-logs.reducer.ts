@@ -139,11 +139,15 @@ export const selectTradeLogsData = createSelector(
         acc[groupName] = [];
       }
       acc[groupName].push({
+        o: cur.open.seconds * 1000,
+        t: (cur.close.seconds - cur.open.seconds) * 1000,
         x: cur.close.seconds * 1000,
         y: cur.profit + (acc[groupName][acc[groupName].length - 1]?.y || 0),
         z: cur.profit,
       });
       acc['Total'].push({
+        o: cur.open.seconds * 1000,
+        t: (cur.close.seconds - cur.open.seconds) * 1000,
         x: cur.close.seconds * 1000,
         y: cur.profit + (acc['Total'][acc['Total'].length - 1]?.y || 0),
         z: cur.profit,
@@ -167,7 +171,11 @@ export const selectTradeLogsAsChartPoints = createSelector(
 
 // TODO: calculate some more statistics here
 const getDaysHeld = (dataset: DataSet) =>
-  (dataset[dataset.length - 1].x - dataset[0].x) / 1000 / 60 / 60 / 24;
+  (dataset[dataset.length - 1].x - dataset[0].o) / 1000 / 60 / 60 / 24;
+const getExposure = (dataset: DataSet) =>
+  dataset.reduce((acc, cur) => (acc += cur.t), 0) /
+  (dataset[dataset.length - 1].x - dataset[0].o);
+
 export const selectTradeLogStatistics = createSelector(
   selectTradeLogsData,
   selectPortfolioSize,
@@ -184,6 +192,7 @@ export const selectTradeLogStatistics = createSelector(
         const vol = (std * Math.sqrt(252)) / portfolioSize;
         const mr = pnl / dataset.length;
         const sharpe = mr / std;
+        const exp = getExposure(dataset);
         return <StatisticsModel>{
           name: key,
           pnl,
@@ -194,6 +203,7 @@ export const selectTradeLogStatistics = createSelector(
           vol,
           mr,
           sharpe,
+          exp,
         };
       }),
     ] as StatisticsModel[]
