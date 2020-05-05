@@ -32,6 +32,7 @@ export class StatsTableComponent implements OnInit {
     'vol',
     'mr',
     'sharpe',
+    'exp',
   ];
   dataSource = new MatTableDataSource<StatisticsModel>([]);
 

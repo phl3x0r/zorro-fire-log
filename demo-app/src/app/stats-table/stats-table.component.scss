@@ -4,7 +4,6 @@ table {
 }
 .mat-column-name {
   text-align: left;
-  width: 20%;
 }
 .mat-column-pnl,
 .mat-column-daysHeld,
@@ -13,9 +12,10 @@ table {
 .mat-column-std,
 .mat-column-vol,
 .mat-column-mr,
-.mat-column-sharpe {
+.mat-column-sharpe,
+.mat-column-exp {
   text-align: right;
-  width: 10%;
+  width: 8%;
   &.mat-header-cell {
     // align-items: right;
     // display: flex;

@@ -54,6 +54,7 @@ export interface GroupSettings {
 }
 
 export type DataSet = Array<{
+  t: number;
   x: number;
   y: number;
   z: number;
@@ -73,6 +74,7 @@ export interface StatisticsModel {
   vol: number; // annualized volatility
   mr: number; // mean return
   sharpe: number; // sharpe
+  exp: number; // exposure
 }
 
 export type Statistics = Array<StatisticsModel>;
