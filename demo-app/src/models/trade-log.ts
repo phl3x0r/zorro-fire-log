@@ -54,6 +54,7 @@ export interface GroupSettings {
 }
 
 export type DataSet = Array<{
+  o: number;
   t: number;
   x: number;
   y: number;
