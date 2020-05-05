@@ -19,6 +19,7 @@ import {
   updateFilter,
   updateGroupSettings,
   updatePortfolioSize,
+  addPositions,
 } from './trade-logs.actions';
 import { SeriesOptionsType } from 'highcharts';
 import * as math from 'mathjs';
@@ -27,6 +28,7 @@ export interface TradeLogState extends EntityState<TradeLogEntry> {
   filter: LogFilter | null;
   groupSettings: GroupSettings;
   portfolioSize: number;
+  positions: TradeLogEntry[];
 }
 export const adapter: EntityAdapter<TradeLogEntry> = createEntityAdapter<
   TradeLogEntry
@@ -39,6 +41,7 @@ export const initialState: TradeLogState = adapter.getInitialState({
     symbol: false,
   },
   portfolioSize: 10000,
+  positions: [],
 });
 export const featureSelectorKey = 'tradeLogs';
 
@@ -60,6 +63,13 @@ export const tradeLogsReducer = createReducer(
   on(updatePortfolioSize, (state, { portfolioSize }) => ({
     ...state,
     portfolioSize,
+  })),
+  on(addPositions, (state, { alias, positions }) => ({
+    ...state,
+    positions: [
+      ...state.positions.filter((pos) => pos.alias !== alias),
+      ...positions,
+    ],
   }))
 );
 
@@ -207,4 +217,9 @@ export const selectTradeLogStatistics = createSelector(
         };
       }),
     ] as StatisticsModel[]
+);
+
+export const selectOpenPositions = createSelector(
+  selectTradeLogState,
+  (state) => state.positions
 );

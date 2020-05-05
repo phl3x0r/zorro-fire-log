@@ -20,3 +20,8 @@ export const updatePortfolioSize = createAction(
   '[TradeLogs] Update Portfolio Size',
   props<{ portfolioSize: number }>()
 );
+
+export const addPositions = createAction(
+  '[Positions] Add positions',
+  props<{ alias: string; positions: TradeLogEntry[] }>()
+);

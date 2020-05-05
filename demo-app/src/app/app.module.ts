@@ -30,6 +30,7 @@ import { useMockData } from './tokens/tokens';
 import { StatsTableComponent } from './stats-table/stats-table.component';
 import { MatSortModule } from '@angular/material/sort';
 import { PortfolioSettingsComponent } from './toolbar/portfolio-settings/portfolio-settings.component';
+import { OpenTradesComponent } from './open-trades/open-trades.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { PortfolioSettingsComponent } from './toolbar/portfolio-settings/portfol
     GroupToggleComponent,
     StatsTableComponent,
     PortfolioSettingsComponent,
+    OpenTradesComponent,
   ],
   imports: [
     BrowserModule,

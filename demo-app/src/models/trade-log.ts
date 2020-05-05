@@ -19,6 +19,10 @@ export interface TradeLogEntry {
   alias: string;
 }
 
+export interface PositionLog {
+  positions: TradeLogEntry[];
+}
+
 export type TradeLog = Array<TradeLogEntry>;
 
 export interface SymbolFilter {

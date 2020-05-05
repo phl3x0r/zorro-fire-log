@@ -7,6 +7,7 @@ import {
   selectGroupSettings,
   selectTradeLogStatistics,
   selectPortfolioSize,
+  selectOpenPositions,
 } from './trade-logs.reducer';
 import { LogFilter, GroupSettings } from '@zfl/models';
 import {
@@ -22,6 +23,7 @@ export class TradeLogsFacade {
   public groupSettings$ = this.store.select(selectGroupSettings);
   public statistics$ = this.store.select(selectTradeLogStatistics);
   public porfolioSize$ = this.store.select(selectPortfolioSize);
+  public openPositions$ = this.store.select(selectOpenPositions);
 
   constructor(private store: Store<TradeLogState>) {}
 

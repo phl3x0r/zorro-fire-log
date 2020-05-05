@@ -1,0 +1,11 @@
+<div class="open-trades-container mat-elevation-z2">
+  Open Trades
+  <ul *ngIf="openTrades && openTrades.length; else noTrades">
+    <li *ngFor="let trade of openTrades">
+      {{ trade.name }} - {{ trade.asset }} - {{ trade.profit }}
+    </li>
+  </ul>
+</div>
+<ng-template #noTrades>
+  You have no open trades
+</ng-template>
