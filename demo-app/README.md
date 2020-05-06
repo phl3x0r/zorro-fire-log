@@ -33,8 +33,16 @@ export const environment = {
   tradeLogs: ["example-1", "example-2"],
   // enable this to use mocked data (avoids reads from firestore)
   useMockData: false,
+  // use local cache, saves reads from firestore
+  useCache: true,
 };
 ```
+
+### Using IndexedDB cache
+To save reads from firestore, the state can be cached and hydrated automatically to and from a local IndexedDB storage.
+To use this feature, simply set the flag `useCache: true` in `environment.ts`.
+When `useCache`is set to `true`, the firestore query will only fetch data which is newer than the latest entry in the store.
+If, for some reason, you wish to reload all logs, simply delete the local IndexedDB storage and reload the app.
 
 ### Using mock data
 If you just want to check out the functionality and don't have a firestore setup with synced logfiles or if you are developing new functionality and want to avoid reading from firestore on every reload, you can use mocked data instead by setting the property `useMockData: true` in environment.ts.
