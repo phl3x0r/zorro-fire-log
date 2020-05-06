@@ -74,7 +74,11 @@ export const tradeLogsReducer = createReducer(
     ].sort((a, b) => a.name.localeCompare(b.name)),
     positionsLoaded: true,
   })),
-  on(clearPositions, (state) => ({ ...state, positions: [] }))
+  on(clearPositions, (state) => ({
+    ...state,
+    positions: [],
+    positionsLoaded: false,
+  }))
 );
 
 export function reducer(state: TradeLogState, action: Action) {
