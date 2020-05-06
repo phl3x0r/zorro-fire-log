@@ -5,29 +5,34 @@
     class="alias mat-elevation-z2"
     (click)="toggleExpand($event, alias)"
   >
-    <mat-checkbox
-      [checked]="alias.enabled"
-      (change)="handleChange($event, alias)"
-      >{{ alias.name }}
-      <span class="count"
+    <div class="expansion-box">
+      <mat-checkbox
+        [checked]="alias.enabled"
+        (change)="handleChange($event, alias)"
+        (click)="$event.stopPropagation()"
+        >{{ alias.name }} </mat-checkbox
+      ><span class="count"
         >({{ (alias.children && alias.children.length) || 0 }})</span
-      ></mat-checkbox
-    ><ng-container *ngIf="alias.expanded">
+      >
+    </div>
+    <ng-container *ngIf="alias.expanded">
       <div
         *ngFor="let algo of alias.children"
         class="algo"
         (click)="toggleExpand($event, algo)"
         [@fold]
       >
-        <mat-checkbox
-          [disabled]="!alias.enabled"
-          [checked]="algo.enabled"
-          (change)="handleChange($event, algo)"
-          >{{ algo.name }}
-          <span class="count"
+        <div class="expansion-box">
+          <mat-checkbox
+            [disabled]="!alias.enabled"
+            [checked]="algo.enabled"
+            (change)="handleChange($event, algo, true)"
+            (click)="$event.stopPropagation()"
+            >{{ algo.name }} </mat-checkbox
+          ><span class="count"
             >({{ (algo.children && algo.children.length) || 0 }})</span
-          ></mat-checkbox
-        >
+          >
+        </div>
         <ng-container *ngIf="algo.expanded">
           <div
             *ngFor="let symbol of algo.children"

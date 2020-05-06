@@ -14,9 +14,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTreeModule } from '@angular/material/tree';
+import { MatTableModule } from '@angular/material/table';
 import { AlgoSelectorComponent } from './algo-selector/algo-selector.component';
 import { AngularResizedEventModule } from 'angular-resize-event';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
@@ -26,6 +27,10 @@ import { ChartModule } from 'angular-highcharts';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { GroupToggleComponent } from './toolbar/group-toggle/group-toggle.component';
 import { useMockData } from './tokens/tokens';
+import { StatsTableComponent } from './stats-table/stats-table.component';
+import { MatSortModule } from '@angular/material/sort';
+import { PortfolioSettingsComponent } from './toolbar/portfolio-settings/portfolio-settings.component';
+import { OpenTradesComponent } from './open-trades/open-trades.component';
 
 @NgModule({
   declarations: [
@@ -34,11 +39,15 @@ import { useMockData } from './tokens/tokens';
     AlgoSelectorComponent,
     ToolbarComponent,
     GroupToggleComponent,
+    StatsTableComponent,
+    PortfolioSettingsComponent,
+    OpenTradesComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     MatIconModule,
@@ -49,6 +58,8 @@ import { useMockData } from './tokens/tokens';
     MatFormFieldModule,
     MatInputModule,
     MatCheckboxModule,
+    MatTableModule,
+    MatSortModule,
     AngularResizedEventModule,
     ChartModule,
     StoreModule.forRoot({ tradeLogs: tradeLogsReducer }),

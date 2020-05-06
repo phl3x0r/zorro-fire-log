@@ -6,17 +6,29 @@ import {
   createSelector,
 } from '@ngrx/store';
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { TradeLogEntry, LogFilter, GroupSettings } from '@zfl/models';
+import {
+  TradeLogEntry,
+  LogFilter,
+  GroupSettings,
+  StatisticsModel,
+  DataCollection,
+  DataSet,
+} from '@zfl/models';
 import {
   addTradeLogs,
   updateFilter,
   updateGroupSettings,
+  updatePortfolioSize,
+  addPositions,
 } from './trade-logs.actions';
 import { SeriesOptionsType } from 'highcharts';
+import * as math from 'mathjs';
 
 export interface TradeLogState extends EntityState<TradeLogEntry> {
   filter: LogFilter | null;
   groupSettings: GroupSettings;
+  portfolioSize: number;
+  positions: TradeLogEntry[];
 }
 export const adapter: EntityAdapter<TradeLogEntry> = createEntityAdapter<
   TradeLogEntry
@@ -28,6 +40,8 @@ export const initialState: TradeLogState = adapter.getInitialState({
     algo: true,
     symbol: false,
   },
+  portfolioSize: 10000,
+  positions: [],
 });
 export const featureSelectorKey = 'tradeLogs';
 
@@ -45,6 +59,17 @@ export const tradeLogsReducer = createReducer(
   on(updateGroupSettings, (state, { groupSettings }) => ({
     ...state,
     groupSettings,
+  })),
+  on(updatePortfolioSize, (state, { portfolioSize }) => ({
+    ...state,
+    portfolioSize,
+  })),
+  on(addPositions, (state, { alias, positions }) => ({
+    ...state,
+    positions: [
+      ...state.positions.filter((pos) => pos.alias !== alias),
+      ...positions,
+    ],
   }))
 );
 
@@ -73,6 +98,11 @@ export const selectGroupSettings = createSelector(
   (state) => state.groupSettings
 );
 
+export const selectPortfolioSize = createSelector(
+  selectTradeLogState,
+  (state) => state.portfolioSize
+);
+
 export const selectTradeLogsSorted = createSelector(
   selectAllTradeLogs,
   (tradeLogs) => tradeLogs.sort((a, b) => a.close.seconds - b.close.seconds)
@@ -95,7 +125,7 @@ export const selectTradeLogsByFilter = createSelector(
     }, <TradeLogEntry[]>[])
 );
 
-export const selectTradeLogsAsChartPoints = createSelector(
+export const selectTradeLogsData = createSelector(
   selectTradeLogsByFilter,
   selectGroupSettings,
   (tradeLogs, groupSettings) => {
@@ -119,21 +149,77 @@ export const selectTradeLogsAsChartPoints = createSelector(
         acc[groupName] = [];
       }
       acc[groupName].push({
+        o: cur.open.seconds * 1000,
+        t: (cur.close.seconds - cur.open.seconds) * 1000,
         x: cur.close.seconds * 1000,
         y: cur.profit + (acc[groupName][acc[groupName].length - 1]?.y || 0),
+        z: cur.profit,
       });
       acc['Total'].push({
+        o: cur.open.seconds * 1000,
+        t: (cur.close.seconds - cur.open.seconds) * 1000,
         x: cur.close.seconds * 1000,
         y: cur.profit + (acc['Total'][acc['Total'].length - 1]?.y || 0),
+        z: cur.profit,
       });
       return acc;
-    }, <SeriesOptionsType[]>{});
-    return [
-      ...Object.keys(reduced).map((key) => ({
-        name: key,
-        data: reduced[key],
-        type: 'line',
-      })),
-    ];
+    }, <DataCollection>{});
+    return reduced;
   }
+);
+
+export const selectTradeLogsAsChartPoints = createSelector(
+  selectTradeLogsData,
+  (reduced) => [
+    ...Object.keys(reduced).map((key) => ({
+      name: key,
+      data: reduced[key],
+      type: 'line',
+    })),
+  ]
+);
+
+// TODO: calculate some more statistics here
+const getDaysHeld = (dataset: DataSet) =>
+  (dataset[dataset.length - 1].x - dataset[0].o) / 1000 / 60 / 60 / 24;
+const getExposure = (dataset: DataSet) =>
+  dataset.reduce((acc, cur) => (acc += cur.t), 0) /
+  (dataset[dataset.length - 1].x - dataset[0].o);
+
+export const selectTradeLogStatistics = createSelector(
+  selectTradeLogsData,
+  selectPortfolioSize,
+  (reduced, portfolioSize) =>
+    [
+      ...Object.keys(reduced).map((key) => {
+        const dataset = reduced[key];
+        const returns = dataset.map((point) => point.z);
+        const std = math.std(returns);
+        const pnl = dataset[dataset.length - 1]?.y || 0;
+        const daysHeld = getDaysHeld(dataset);
+        const ar = (1 + pnl) * (365 / daysHeld) - 1;
+        const cagr = (ar + portfolioSize) / portfolioSize - 1;
+        const vol = (std * Math.sqrt(252)) / portfolioSize;
+        const mr = pnl / dataset.length;
+        const sharpe = mr / std;
+        const exp = getExposure(dataset);
+        return <StatisticsModel>{
+          name: key,
+          pnl,
+          daysHeld,
+          ar,
+          cagr,
+          std,
+          vol,
+          mr,
+          sharpe,
+          exp,
+        };
+      }),
+    ] as StatisticsModel[]
+);
+
+export const selectOpenPositions = createSelector(
+  selectTradeLogState,
+  (state) => state.positions
 );

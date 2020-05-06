@@ -14,9 +14,11 @@ export const environment = {
     messagingSenderId: '<your-messaging-sender-id>',
   },
   // as list of trade logs. should match the aliases used in trade-sync
-  tradeLogs: ['oanda-live'],
+  tradeLogs: ['trades'],
+  // as list of position logs. should match the aliases used in trade-sync
+  positionLogs: ['positions'],
   // enable this to use mocked data (avoids reads from firestore)
-  useMockData: false,
+  useMockData: true,
 };
 
 /*

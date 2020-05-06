@@ -2,8 +2,6 @@
   "firebase": {
     "databaseURL": "https://zorro-fire-log.firebaseio.com"
   },
-  "tradeLogs": [
-    { "path": "./test/demotrades.csv", "alias": "demo" },
-    { "path": "./test/trades.csv", "alias": "oanda" }
-  ]
+  "tradeLogs": [{ "path": "./test/demotrades.csv", "alias": "demo" }],
+  "positionLogs": [{ "path": "./test/positions.csv", "alias": "demo" }]
 }

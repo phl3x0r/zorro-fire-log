@@ -1,7 +1,6 @@
 .container {
   display: flex;
-  height: 70vh;
-  width: 15vw;
+  width: 256px;
   flex-direction: column;
   margin-left: 20px;
 }
@@ -35,13 +34,9 @@
   opacity: 0.4;
 }
 
-::ng-deep label {
+.expansion-box {
   width: 100%;
   display: flex;
-}
-
-::ng-deep .mat-checkbox-label {
-  width: 100%;
-  display: flex;
+  flex-direction: row;
   justify-content: space-between;
 }

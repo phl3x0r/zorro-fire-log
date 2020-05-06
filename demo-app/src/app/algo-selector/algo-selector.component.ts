@@ -43,13 +43,13 @@ export class AlgoSelectorComponent {
         <Node>{
           name: alias[0],
           enabled: alias[1].enabled,
-          expanded: alias[1].enabled,
+          expanded: alias[1].expanded,
           children: Object.entries(alias[1].algos).map(
             (algo) =>
               <Node>{
                 name: algo[0],
                 enabled: algo[1].enabled,
-                expanded: algo[1].enabled,
+                expanded: algo[1].expanded,
                 children: Object.entries(algo[1].symbols).map(
                   (symbol) =>
                     <Node>{
@@ -68,17 +68,21 @@ export class AlgoSelectorComponent {
 
   constructor() {}
 
-  handleChange($event: MatCheckboxChange, node: Node) {
-    this.checkNode($event.checked, node);
+  handleChange($event: MatCheckboxChange, node: Node, all: boolean = false) {
+    if (all || !$event.checked) {
+      this.checkNode($event.checked, node);
+    }
     node.enabled = $event.checked;
     // this.enableByDescendant(this.nodes);
     const logFilter: LogFilter = {
       aliases: this.nodes.reduce((aliasacc, alias) => {
         aliasacc[alias.name] = {
           enabled: alias.enabled,
+          expanded: alias.expanded,
           algos: alias.children.reduce((algoacc, algo) => {
             algoacc[algo.name] = {
               enabled: algo.enabled,
+              expanded: algo.expanded,
               symbols: algo.children.reduce((symbolacc, symbol) => {
                 symbolacc[symbol.name] = { enabled: symbol.enabled };
                 return symbolacc;

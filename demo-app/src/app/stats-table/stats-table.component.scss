@@ -1,0 +1,29 @@
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+.mat-column-name {
+  text-align: left;
+}
+.mat-column-pnl,
+.mat-column-daysHeld,
+.mat-column-ar,
+.mat-column-cagr,
+.mat-column-std,
+.mat-column-vol,
+.mat-column-mr,
+.mat-column-sharpe,
+.mat-column-exp {
+  text-align: right;
+  width: 8%;
+  &.mat-header-cell {
+    // align-items: right;
+    // display: flex;
+  }
+}
+
+:host ::ng-deep .mat-sort-header-container {
+  button {
+    text-align: inherit;
+  }
+}

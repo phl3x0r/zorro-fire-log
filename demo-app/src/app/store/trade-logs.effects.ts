@@ -1,8 +1,8 @@
 import { createEffect, ofType, Actions } from '@ngrx/effects';
-import { addTradeLogs, updateFilter } from './trade-logs.actions';
+import { addTradeLogs, updateFilter, addPositions } from './trade-logs.actions';
 import { map, withLatestFrom, tap, delay } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { TradeLogEntry } from '@zfl/models';
+import { TradeLogEntry, PositionLog } from '@zfl/models';
 import { environment } from '../../environments/environment';
 import { merge, iif, of } from 'rxjs';
 import { Injectable, Inject } from '@angular/core';
@@ -61,13 +61,14 @@ export class TradeLogEffects {
               ...acc,
               aliases: {
                 ...acc.aliases,
-                [cur.alias]: { enabled: true, algos: {} },
+                [cur.alias]: { enabled: true, expanded: true, algos: {} },
               },
             };
           }
           if (!acc.aliases[cur.alias].algos[cur.name]) {
             acc.aliases[cur.alias].algos[cur.name] = {
               enabled: true,
+              expanded: false,
               symbols: {},
             };
           }
@@ -80,6 +81,41 @@ export class TradeLogEffects {
         }, newFilter);
         return updateFilter({ filter: reduced });
       })
+    )
+  );
+
+  // TODO: add mocked positions
+  onPositionLogUpdate$ = createEffect(() =>
+    iif(
+      () => false,
+      of(
+        addTradeLogs({
+          tradeLogs: mockTradeLogs,
+        })
+      ).pipe(
+        delay(500),
+        tap(() => console.warn('Using MOCKED data'))
+      ),
+      merge(
+        ...environment.positionLogs.map((alias) =>
+          this.firestore
+            .collection<PositionLog>(alias)
+            .valueChanges()
+            .pipe(
+              map((positions) =>
+                addPositions({
+                  alias,
+                  positions: positions
+                    .map((p) => p.positions.map((tle) => ({ ...tle, alias })))
+                    .reduce((acc, val) => {
+                      console.log(acc, val);
+                      return acc.concat(val);
+                    }, []),
+                })
+              )
+            )
+        )
+      )
     )
   );
 }
