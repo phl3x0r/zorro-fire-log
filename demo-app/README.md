@@ -31,6 +31,8 @@ export const environment = {
   },
   // as list of trade logs. should match the aliases used in trade-sync
   tradeLogs: ["example-1", "example-2"],
+  // as list of position logs. should match the aliases used in trade-sync
+  positionLogs: ['positions'],
   // enable this to use mocked data (avoids reads from firestore)
   useMockData: false,
   // use local cache, saves reads from firestore
@@ -48,6 +50,9 @@ If, for some reason, you wish to reload all logs, simply delete the local Indexe
 If you just want to check out the functionality and don't have a firestore setup with synced logfiles or if you are developing new functionality and want to avoid reading from firestore on every reload, you can use mocked data instead by setting the property `useMockData: true` in environment.ts.
 
 When setting `useMockData: true` the app will read log entries provided in `demo-app/src/mockdata/mock-tradelogs.ts` and completely forego any communication with firebase.
+
+### Using position logs for open positions
+To use position logs for open positions, set `positionLogs` to the list of log aliases to load. This will *only* work in conjunction with the `writeOpenTrades.c`script from the [Zorro Script](https://github.com/phl3x0r/zorro-fire-log/tree/master/zorro-script) folder.
 
 ## Run development server
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
