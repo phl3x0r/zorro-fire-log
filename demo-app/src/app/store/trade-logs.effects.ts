@@ -97,7 +97,7 @@ export class TradeLogEffects {
         tap(() => console.warn('Using MOCKED data'))
       ),
       merge(
-        ...environment.positionLogs.map((alias) =>
+        ...(environment.positionLogs || []).map((alias) =>
           this.firestore
             .collection<PositionLog>(alias)
             .valueChanges()
@@ -108,7 +108,6 @@ export class TradeLogEffects {
                   positions: positions
                     .map((p) => p.positions.map((tle) => ({ ...tle, alias })))
                     .reduce((acc, val) => {
-                      console.log(acc, val);
                       return acc.concat(val);
                     }, []),
                 })

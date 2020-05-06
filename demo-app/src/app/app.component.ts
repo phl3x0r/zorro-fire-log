@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { LogFilter } from '@zfl/models';
 import { ResizedEvent } from 'angular-resize-event';
 import { TradeLogsFacade } from './store/trade-logs.facade';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,10 @@ export class AppComponent implements OnInit {
   chartPoints$ = this.tradeLogsFacade.chartPoints$;
   statistics$ = this.tradeLogsFacade.statistics$;
   openPositions$ = this.tradeLogsFacade.openPositions$;
+  positionsLoaded$ = this.tradeLogsFacade.positionsLoaded$;
+
+  openPositionsEnabled =
+    environment.positionLogs && environment.positionLogs.length > 0;
 
   constructor(private tradeLogsFacade: TradeLogsFacade) {}
 

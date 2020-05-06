@@ -1,5 +1,47 @@
 .open-trades-container {
-  width: 256px;
+  width: 384px;
   margin-right: 20px;
-  min-height: 200px;
+  min-height: 256px;
+  font-size: smaller;
+}
+
+mat-list {
+  padding: 0;
+}
+.list-header {
+  border-bottom: 2px solid #333;
+}
+.list-total {
+  border-top: 2px solid #333;
+  font-weight: bold;
+}
+.algo,
+.symbol,
+.profit {
+  font-size: small;
+}
+
+.algo {
+  width: 50%;
+}
+.symbol {
+  width: 40%;
+}
+.profit {
+  width: 10%;
+  text-align: right;
+  &.positive {
+    color: green;
+  }
+  &.negative {
+    color: red;
+  }
+}
+
+.center-fill {
+  width: 100%;
+  height: 256px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

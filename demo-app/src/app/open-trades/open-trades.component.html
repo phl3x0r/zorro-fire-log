@@ -1,11 +1,52 @@
-<div class="open-trades-container mat-elevation-z2">
-  Open Trades
-  <ul *ngIf="openTrades && openTrades.length; else noTrades">
-    <li *ngFor="let trade of openTrades">
-      {{ trade.name }} - {{ trade.asset }} - {{ trade.profit }}
-    </li>
-  </ul>
-</div>
-<ng-template #noTrades>
-  You have no open trades
+<mat-card class="open-trades-container mat-elevation-z2">
+  <mat-card-content>
+    <ng-container *ngIf="loaded; else loadingTemplate">
+      <ng-container
+        *ngIf="openTrades && openTrades.length; else noTradesTemplate"
+      >
+        <mat-list>
+          <mat-list-item class="list-header">
+            <div class="algo">Algo</div>
+            <div class="symbol">Symbol</div>
+            <div class="profit">Profit</div>
+          </mat-list-item>
+          <mat-list-item *ngFor="let trade of openTrades; trackBy: trackByFn">
+            <div class="algo">{{ trade.name }}</div>
+            <div class="symbol">{{ trade.asset }}</div>
+            <div
+              class="profit"
+              [class.positive]="trade.profit > 0"
+              [class.negative]="trade.profit < 0"
+            >
+              {{ trade.profit | number: "1.2-2" }}
+            </div>
+          </mat-list-item>
+
+          <mat-list-item class="list-total">
+            <div class="algo">Total</div>
+            <div class="symbol"></div>
+            <div
+              class="profit"
+              [class.positive]="total > 0"
+              [class.negative]="total < 0"
+            >
+              {{ total | number: "1.2-2" }}
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </ng-container>
+    </ng-container>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #loadingTemplate>
+  <div class="center-fill">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+</ng-template>
+
+<ng-template #noTradesTemplate>
+  <div class="center-fill">
+    You have no open trades
+  </div>
 </ng-template>

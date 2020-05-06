@@ -15,6 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatTableModule } from '@angular/material/table';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AlgoSelectorComponent } from './algo-selector/algo-selector.component';
 import { AngularResizedEventModule } from 'angular-resize-event';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -60,6 +62,8 @@ import { OpenTradesComponent } from './open-trades/open-trades.component';
     MatCheckboxModule,
     MatTableModule,
     MatSortModule,
+    MatListModule,
+    MatProgressSpinnerModule,
     AngularResizedEventModule,
     ChartModule,
     StoreModule.forRoot({ tradeLogs: tradeLogsReducer }),

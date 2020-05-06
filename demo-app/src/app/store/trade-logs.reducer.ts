@@ -29,6 +29,7 @@ export interface TradeLogState extends EntityState<TradeLogEntry> {
   groupSettings: GroupSettings;
   portfolioSize: number;
   positions: TradeLogEntry[];
+  positionsLoaded: boolean;
 }
 export const adapter: EntityAdapter<TradeLogEntry> = createEntityAdapter<
   TradeLogEntry
@@ -42,6 +43,7 @@ export const initialState: TradeLogState = adapter.getInitialState({
   },
   portfolioSize: 10000,
   positions: [],
+  positionsLoaded: false,
 });
 export const featureSelectorKey = 'tradeLogs';
 
@@ -69,7 +71,8 @@ export const tradeLogsReducer = createReducer(
     positions: [
       ...state.positions.filter((pos) => pos.alias !== alias),
       ...positions,
-    ],
+    ].sort((a, b) => a.name.localeCompare(b.name)),
+    positionsLoaded: true,
   }))
 );
 
@@ -219,7 +222,12 @@ export const selectTradeLogStatistics = createSelector(
     ] as StatisticsModel[]
 );
 
-export const selectOpenPositions = createSelector(
+export const selectPositions = createSelector(
   selectTradeLogState,
   (state) => state.positions
+);
+
+export const selectPositionsLoaded = createSelector(
+  selectTradeLogState,
+  (state) => state.positionsLoaded
 );

@@ -23,8 +23,11 @@
             [dimensions]="dimensions"
           ></app-stats-table></ng-container
       ></mat-tab>
-      <mat-tab label="Third"><div class="tab-content">Content 3</div></mat-tab>
     </mat-tab-group>
   </mat-card>
-  <app-open-trades [openTrades]="openPositions$ | async"></app-open-trades>
+  <app-open-trades
+    *ngIf="openPositionsEnabled"
+    [openTrades]="openPositions$ | async"
+    [loaded]="positionsLoaded$ | async"
+  ></app-open-trades>
 </div>
