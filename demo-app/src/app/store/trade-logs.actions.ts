@@ -25,3 +25,5 @@ export const addPositions = createAction(
   '[Positions] Add positions',
   props<{ alias: string; positions: TradeLogEntry[] }>()
 );
+
+export const clearPositions = createAction('[Positions] Clear positions');
