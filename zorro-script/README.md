@@ -1,7 +1,7 @@
 # Zorro Script
 
 ## About
-The writeOpenTrades.c script provide the ability to write open trades to a log file.
+The `writeOpenTrades.c` script provide the ability to write open trades to a log file.
 
 It writes the following items to the csv. This format matches the demo apps and zorros trades.csv headers to allow for easy initial integration to the demo app. 
 
