@@ -1,0 +1,26 @@
+<div class="date-filter">
+  <!-- <mat-checkbox matInput [formControl]="toggleControl"
+      >Toggle date filter</mat-checkbox
+    > -->
+  <mat-slide-toggle matInput color="accent" [formControl]="toggleControl">
+    Toggle date filter
+  </mat-slide-toggle>
+  <div class="datepickers-container" *ngIf="toggleControl.value" [@fold]>
+    <mat-form-field>
+      <mat-label>From date</mat-label>
+      <input
+        matInput
+        [formControl]="fromDateControl"
+        [matDatepicker]="fromDate"
+      />
+      <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+      <mat-datepicker #fromDate></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>To date</mat-label>
+      <input matInput [formControl]="toDateControl" [matDatepicker]="toDate" />
+      <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+      <mat-datepicker #toDate></mat-datepicker>
+    </mat-form-field>
+  </div>
+</div>

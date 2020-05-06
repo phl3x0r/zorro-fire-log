@@ -17,6 +17,8 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatTableModule } from '@angular/material/table';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AlgoSelectorComponent } from './algo-selector/algo-selector.component';
 import { AngularResizedEventModule } from 'angular-resize-event';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,6 +36,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { PortfolioSettingsComponent } from './toolbar/portfolio-settings/portfolio-settings.component';
 import { OpenTradesComponent } from './open-trades/open-trades.component';
 import { storageSyncMetaReducer } from 'ngrx-store-persist';
+import { DateFilterComponent } from './toolbar/date-filter/date-filter.component';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -45,6 +49,7 @@ import { storageSyncMetaReducer } from 'ngrx-store-persist';
     StatsTableComponent,
     PortfolioSettingsComponent,
     OpenTradesComponent,
+    DateFilterComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,6 +70,9 @@ import { storageSyncMetaReducer } from 'ngrx-store-persist';
     MatSortModule,
     MatListModule,
     MatProgressSpinnerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSlideToggleModule,
     AngularResizedEventModule,
     ChartModule,
     StoreModule.forRoot(

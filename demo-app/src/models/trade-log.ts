@@ -83,3 +83,9 @@ export interface StatisticsModel {
 }
 
 export type Statistics = Array<StatisticsModel>;
+
+export interface DateFilter {
+  enabled: boolean;
+  from: Date;
+  to: Date;
+}

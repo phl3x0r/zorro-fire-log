@@ -13,6 +13,7 @@ import {
   StatisticsModel,
   DataCollection,
   DataSet,
+  DateFilter,
 } from '@zfl/models';
 import {
   addTradeLogs,
@@ -25,6 +26,7 @@ import * as math from 'mathjs';
 
 export interface TradeLogState extends EntityState<TradeLogEntry> {
   filter: LogFilter | null;
+  dateFilter: DateFilter;
   groupSettings: GroupSettings;
   portfolioSize: number;
   positions: TradeLogEntry[];
@@ -35,6 +37,7 @@ export const adapter: EntityAdapter<TradeLogEntry> = createEntityAdapter<
 >();
 export const initialState: TradeLogState = adapter.getInitialState({
   filter: { aliases: {} },
+  dateFilter: { enabled: false, from: null, to: null },
   groupSettings: {
     alias: false,
     algo: true,
@@ -93,6 +96,11 @@ export const {
 export const selectFilter = createSelector(
   selectTradeLogState,
   (state: TradeLogState) => state.filter
+);
+
+export const selectDateFilter = createSelector(
+  selectTradeLogState,
+  (state) => state.dateFilter
 );
 
 export const selectGroupSettings = createSelector(

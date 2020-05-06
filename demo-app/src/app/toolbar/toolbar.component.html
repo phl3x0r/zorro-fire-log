@@ -7,4 +7,8 @@
     [portfolioSize]="portfolioSize$ | async"
     (portfolioSizeChange)="updatePortfolioSize($event)"
   ></app-portfolio-settings>
+  <app-date-filter
+    [dateFilter]="dateFilter$ | async"
+    (dateFilterChange)="updateDateFilter($event)"
+  ></app-date-filter>
 </div>
