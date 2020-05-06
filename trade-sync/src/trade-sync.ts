@@ -95,12 +95,22 @@ function onTradeLogLine(tail: Tail, tl: TradeLog) {
 // hande lines from position logs
 function onPositionLogLine(tail: Tail, tl: TradeLog) {
   const entry = { positions: [] };
+  let lastWriteEmpty = false;
   tail.on("line", (line: string) => {
     if (line) {
       if (line === "EOF") {
         const fbId = tl.alias;
         const collection = "positions";
-        writeToFirestore(collection, fbId, entry, () => (entry.positions = []));
+        // Don't write empty list if last write was also empty
+        if (
+          entry.positions.length ||
+          (!entry.positions.length && !lastWriteEmpty)
+        ) {
+          writeToFirestore(collection, fbId, entry, () => {
+            lastWriteEmpty = !entry.positions.length;
+            entry.positions = [];
+          });
+        }
       } else {
         const parts = line.split(",");
         if (parts.length === 12 && parts[0].toLowerCase() !== "name") {
