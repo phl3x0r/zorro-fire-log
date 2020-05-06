@@ -18,7 +18,9 @@ export const environment = {
   // as list of position logs. should match the aliases used in trade-sync
   positionLogs: ['positions'],
   // enable this to use mocked data (avoids reads from firestore)
-  useMockData: true,
+  useMockData: false,
+  // use local cache, saves reads from firestore
+  useCache: true,
 };
 
 /*

@@ -21,7 +21,6 @@ import {
   updatePortfolioSize,
   addPositions,
 } from './trade-logs.actions';
-import { SeriesOptionsType } from 'highcharts';
 import * as math from 'mathjs';
 
 export interface TradeLogState extends EntityState<TradeLogEntry> {
@@ -230,4 +229,11 @@ export const selectPositions = createSelector(
 export const selectPositionsLoaded = createSelector(
   selectTradeLogState,
   (state) => state.positionsLoaded
+);
+
+// cache stuff
+export const selectLatestEntryTime = createSelector(
+  selectTradeLogsSorted,
+  (tradeLogs) =>
+    tradeLogs && tradeLogs.length && tradeLogs[tradeLogs.length - 1].close
 );

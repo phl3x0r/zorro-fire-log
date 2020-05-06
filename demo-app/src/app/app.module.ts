@@ -33,6 +33,7 @@ import { StatsTableComponent } from './stats-table/stats-table.component';
 import { MatSortModule } from '@angular/material/sort';
 import { PortfolioSettingsComponent } from './toolbar/portfolio-settings/portfolio-settings.component';
 import { OpenTradesComponent } from './open-trades/open-trades.component';
+import { storageSyncMetaReducer } from 'ngrx-store-persist';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,10 @@ import { OpenTradesComponent } from './open-trades/open-trades.component';
     MatProgressSpinnerModule,
     AngularResizedEventModule,
     ChartModule,
-    StoreModule.forRoot({ tradeLogs: tradeLogsReducer }),
+    StoreModule.forRoot(
+      { tradeLogs: tradeLogsReducer },
+      { metaReducers: [storageSyncMetaReducer] }
+    ),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,

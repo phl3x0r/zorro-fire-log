@@ -32,6 +32,7 @@
     "highcharts": "^8.0.4",
     "mathjs": "^6.6.5",
     "ngrx": "0.0.1-security",
+    "ngrx-store-persist": "^1.0.20",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
