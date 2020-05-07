@@ -211,7 +211,7 @@ export const selectTradeLogStatistics = createSelector(
         const cagr = (ar + portfolioSize) / portfolioSize - 1;
         const vol = (std * Math.sqrt(252)) / portfolioSize;
         const mr = pnl / dataset.length;
-        const sharpe = mr / std;
+        const sharpe = Math.sqrt(dataset.length) * (mr / std);
         const exp = getExposure(dataset);
         return <StatisticsModel>{
           name: key,
