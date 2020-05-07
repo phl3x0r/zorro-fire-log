@@ -1,5 +1,10 @@
 import { createEffect, ofType, Actions } from '@ngrx/effects';
-import { addTradeLogs, updateFilter, addPositions } from './trade-logs.actions';
+import {
+  addTradeLogs,
+  updateFilter,
+  addPositions,
+  clearPositions,
+} from './trade-logs.actions';
 import {
   map,
   withLatestFrom,
@@ -127,14 +132,15 @@ export class TradeLogEffects {
       merge(
         ...(environment.positionLogs || []).map((alias) =>
           this.firestore
-            .collection<PositionLog>(alias)
+            .collection('positions')
+            .doc<PositionLog>(alias)
             .valueChanges()
             .pipe(
-              map((positions) =>
+              map((pLog) =>
                 addPositions({
                   alias,
-                  positions: positions
-                    .map((p) => p.positions.map((tle) => ({ ...tle, alias })))
+                  positions: pLog.positions
+                    .map((tle) => ({ ...tle, alias }))
                     .reduce((acc, val) => {
                       return acc.concat(val);
                     }, []),
@@ -143,6 +149,13 @@ export class TradeLogEffects {
             )
         )
       )
+    )
+  );
+
+  onFirstLoadClearPositions$ = createEffect(() =>
+    of(true).pipe(
+      take(1),
+      map(() => clearPositions())
     )
   );
 }

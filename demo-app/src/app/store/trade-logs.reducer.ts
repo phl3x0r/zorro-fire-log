@@ -21,6 +21,7 @@ import {
   updateGroupSettings,
   updatePortfolioSize,
   addPositions,
+  clearPositions,
 } from './trade-logs.actions';
 import * as math from 'mathjs';
 
@@ -75,6 +76,11 @@ export const tradeLogsReducer = createReducer(
       ...positions,
     ].sort((a, b) => a.name.localeCompare(b.name)),
     positionsLoaded: true,
+  })),
+  on(clearPositions, (state) => ({
+    ...state,
+    positions: [],
+    positionsLoaded: false,
   }))
 );
 
