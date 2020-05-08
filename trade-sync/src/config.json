@@ -2,6 +2,34 @@
   "firebase": {
     "databaseURL": "https://zorro-fire-log.firebaseio.com"
   },
-  "tradeLogs": [{ "path": "./test/demotrades.csv", "alias": "demo" }],
-  "positionLogs": [{ "path": "./test/positions.csv", "alias": "demo" }]
+  "tradeLogs": [
+    {
+      "path": "./test/demotrades.csv",
+      "alias": "demo-trades",
+      "schema": "mySchema"
+    }
+  ],
+  "positionLogs": [
+    {
+      "path": "./test/positions.csv",
+      "alias": "demo-positions",
+      "schema": "mySchema"
+    }
+  ],
+  "schemas": {
+    "mySchema": {
+      "name": "string",
+      "type": "string",
+      "asset": "string",
+      "id": "int",
+      "lots": "float",
+      "open": "date",
+      "close": "date",
+      "entry": "float",
+      "exit": "float",
+      "profit": "float",
+      "roll": "float",
+      "exitType": "string"
+    }
+  }
 }
