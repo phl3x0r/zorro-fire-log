@@ -35,3 +35,4 @@ trade-sync/yarn.lock
 trade-sync/node_modules
 trade-sync/dist
 /.vs
+trade-sync.config.json

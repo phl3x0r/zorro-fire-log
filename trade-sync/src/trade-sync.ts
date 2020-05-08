@@ -1,8 +1,7 @@
+#!/usr/bin/env node
 import * as admin from "firebase-admin";
 import { Tail } from "tail";
 import { createHash } from "crypto";
-const fs = require("fs");
-const readline = require("readline");
 
 interface TradeLog {
   path: string;
@@ -15,7 +14,7 @@ interface Schema {
 }
 
 interface Config {
-  firebase: { databaseURL: string };
+  firebase: { databaseURL: string; credential: { [key: string]: string } };
   tradeLogs: TradeLog[];
   positionLogs: TradeLog[];
   schemas: { [key: string]: Schema };
@@ -34,14 +33,35 @@ enum LogType {
   PositionLog = "positionLog",
 }
 
-const config: Config = require("./config.json");
-const serviceAccount = require("./serviceAccountKey.json");
+let fs = require("fs");
+let path = require("path");
+const chalk = require("chalk");
+const clear = require("clear");
+const figlet = require("figlet");
+const program = require("commander");
+clear();
+console.log(
+  chalk.green(figlet.textSync("trade-sync", { horizontalLayout: "full" }))
+);
+program
+  .version("0.2.0")
+  .description("A script for syncing logfiles to firebase")
+  .option("-b, --fromBeginning", "Read files from first line")
+  .option("-c, --config <file>", "config file", "trade-sync.config.json")
+  .parse(process.argv);
 
-const args = process.argv.slice(2);
+let config: Config = <Config>{};
+let configPath = path.join(__dirname, "./", program.config);
+if (fs.existsSync(configPath)) {
+  config = require(configPath);
+} else {
+  console.error(chalk.red(`config file ${configPath} not found`));
+  process.exit(1);
+}
 
 admin.initializeApp({
-  ...config.firebase,
-  credential: admin.credential.cert(serviceAccount),
+  databaseURL: config.firebase.databaseURL,
+  credential: admin.credential.cert(config.firebase.credential),
 });
 
 if (config.tradeLogs && config.tradeLogs.length) {
@@ -61,11 +81,11 @@ function writeLogFile(logType: LogType) {
   logfiles.forEach((tl) => {
     const schema = config.schemas[tl.schema];
     if (!schema) {
-      console.error(`Schema [${schema}] not found!`);
+      console.error(chalk.red(`Schema [${schema}] not found!`));
     }
     const tail = new Tail(tl.path, {
       flushAtEOF: true,
-      fromBeginning: args.includes("--fromBeginning"),
+      fromBeginning: !!program.fromBeginning,
     });
     if (logType === LogType.TradeLog) {
       onTradeLogLine(tail, tl, schema);
@@ -95,7 +115,7 @@ function onTradeLogLine(tail: Tail, tl: TradeLog, schema: Schema) {
 
 // hande lines from position logs
 function onPositionLogLine(tail: Tail, tl: TradeLog, schema: Schema) {
-  const entry = { positions: [] };
+  const entry: { positions: LogEntry[] } = { positions: [] };
   let lastWriteEmpty = false;
   tail.on("line", (line: string) => {
     if (line) {
@@ -175,7 +195,7 @@ function writeToFirestore(
       }
     })
     .catch(function (error) {
-      console.error("Error writing trade log: ", error);
+      console.error(chalk.red("Error writing trade log: ", error));
     });
 }
 
@@ -186,7 +206,9 @@ function mapEntry(parts: string[], schema: Schema): LogEntry {
   );
 
   return mappedParts.reduce((acc, cur) => {
-    acc[cur[0]] = cur[1];
+    if (cur) {
+      acc[cur[0]] = cur[1];
+    }
     return acc;
   }, <LogEntry>{});
 }
@@ -194,7 +216,7 @@ function mapEntry(parts: string[], schema: Schema): LogEntry {
 function mapPart(
   part: string,
   c: [string, "string" | "int" | "float" | "date"]
-): [string, string | number | admin.firestore.Timestamp] {
+): [string, string | number | admin.firestore.Timestamp] | null {
   const name = c[0];
   const type = c[1];
 
@@ -210,5 +232,6 @@ function mapPart(
   if (type === "date") {
     return [name, admin.firestore.Timestamp.fromDate(new Date(part))];
   }
-  console.error(`Mapping type [${type}] not found in schema!`);
+  console.warn(chalk.yellow(`Mapping type [${type}] not found in schema!`));
+  return null;
 }
