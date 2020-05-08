@@ -25,14 +25,45 @@ IMPORTANT: Don't share the contents of this file with others as it contains your
 
 ### Configuration
 Create or edit src/config.json such that it contains the path for your firestore db and a list of tradelogs to watch.
+Furthermore, each entry in `tradLogs` and `positionLogs` must contain a reference to a valid `schema`.
+The `schemas` property contains the `schema` to use when parsing the lines and should appear in the order corresponding to the entry parts.
 
-Example:
+Example config:
 ```json
 {
   "firebase": {
-    "databaseURL": "https://my-trade-logs.firebaseio.com"
+    "databaseURL": "https://zorro-fire-log.firebaseio.com"
   },
-  "tradeLogs": [{ "path": "path/to/trades.csv", "alias": "demo" }]
+  "tradeLogs": [
+    {
+      "path": "./test/demotrades.csv",
+      "alias": "demo-trades",
+      "schema": "mySchema"
+    }
+  ],
+  "positionLogs": [
+    {
+      "path": "./test/positions.csv",
+      "alias": "demo-positions",
+      "schema": "mySchema"
+    }
+  ],
+  "schemas": {
+    "mySchema": {
+      "name": "string",
+      "type": "string",
+      "asset": "string",
+      "id": "int",
+      "lots": "float",
+      "open": "date",
+      "close": "date",
+      "entry": "float",
+      "exit": "float",
+      "profit": "float",
+      "roll": "float",
+      "exitType": "string"
+    }
+  }
 }
 ```
 
@@ -47,3 +78,7 @@ Optionally you can pass --fromBeginning to read all files from the first line.
 ```sh
 $ tsc && node dist/trade-sync.js --fromBeginning
 ```
+
+### Known Issues
+If another program aquires a lock on the file, this can result in a `[Error: EBUSY: resource busy or locked, open 'path\to\file.csv']` from `fs.watch`.
+Currently the only "fix" is to restart the script
