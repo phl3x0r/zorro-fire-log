@@ -31,7 +31,7 @@ $ cd trade-sync
 $ npm install
 ```
 
-Create a firebase [service account](https://firebase.google.com/docs/admin/setup) and copy the json file to src/serviceAccountKey.json
+Create a firebase [service account](https://firebase.google.com/docs/admin/setup) and copy the contents to the `firebase.credential` property in your config file.
 
 IMPORTANT: Don't share the contents of this file with others as it contains your private firebase credentials!
 
