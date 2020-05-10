@@ -2,7 +2,6 @@
 
 ## Install from NPM
 
-coming soon:
 install globally running
 ```sh
 $ npm i -g trade-sync
