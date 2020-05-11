@@ -147,8 +147,7 @@ export class TradeLogEffects {
                       return acc.concat(val);
                     }, []),
                 })
-              ),
-              tap(console.log)
+              )
             )
         )
       )
