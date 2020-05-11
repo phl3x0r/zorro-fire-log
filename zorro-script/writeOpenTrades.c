@@ -11,33 +11,28 @@
 Change Log:
 20200504 - Initial script
 20200505 - Added EOF flag
+20200511 - Fix for Open file, replaced fwrite with fopen and fclose. 
 
 */
+#include <stdio.h>
 
 void writeOpenTrades(string fileName)
 {
-	char header[120];
-	char tradeValues[120];
-	char eof[5];
 	string tradeDirection;
-	file_write(fileName, tradeValues, 0);
-	sprintf(header, "Name,Type,Asset,ID,Lots,Open,Close,Entry,Exit,Profit,Roll,ExitType");
-	file_append(fileName, header);
-
-
+	vars fp = fopen(fileName, "w");
+	fprintf(fp, "%s", "Name,Type,Asset,ID,Lots,Open,Close,Entry,Exit,Profit,Roll,ExitType");
+	fclose(fp);
 	for (open_trades)
 	{
 		// get trade direction, long or short  Name,Type,Asset,ID,Lots,Open,Close,Entry,Exit,Profit,Roll,ExitType
-
 		if (TradeIsLong) {
 			tradeDirection = "Long";
 		}
 		else {
 			tradeDirection = "Short";
 		}
-
-		// write trade-specific variables to fileName
-		sprintf(tradeValues, "\n%s,%s,%s,%i,%i,%s,%04i-%02i-%02i %02i:%02i,%.5f,%.5f,%.2f,%.2f,Open",
+		fp = fopen(fileName, "a");
+		fprintf(fp, "\n%s,%s,%s,%i,%i,%s,%04i-%02i-%02i %02i:%02i,%.5f,%.5f,%.2f,%.2f,Open",
 			TradeAlgo,
 			tradeDirection,
 			TradeAsset,
@@ -49,22 +44,18 @@ void writeOpenTrades(string fileName)
 			price(),
 			(var)TradeProfit,
 			(var)TradeRoll);
-
-		file_append(fileName, tradeValues, 0);
-
+		fclose(fp);
 	}
-
-	// write eof flag for trade-sync 
-	sprintf(eof, "\nEOF");
-	file_append(fileName, eof, 0);
+	fp = fopen(fileName, "a");
+	fprintf(fp, "%s", "\nEOF");
+	fclose(fp);
 }
 
 // uncomment this code if you want to write trades at each tock() interval. The tock interval defaults to 60000ms. You can change this with TockTime = xxxxxx; Alternatively you can place this at the end of your run() function and it will run based on BarPeriod of the script. 
 
 function tock() {
-
-
-	string tradeLogFile = LOG_OPEN_TRADES;
-	writeOpenTrades(tradeLogFile);
-
+	if (!is(LOOKBACK)) {
+		string tradeLogFile = LOG_OPEN_TRADES;
+		writeOpenTrades(tradeLogFile);
+	}
 }
