@@ -12,14 +12,13 @@ table {
 .mat-column-std,
 .mat-column-vol,
 .mat-column-mr,
-.mat-column-sharpe,
-.mat-column-exp {
+.mat-column-sharpe {
   text-align: right;
   width: 8%;
-  &.mat-header-cell {
-    // align-items: right;
-    // display: flex;
-  }
+}
+.mat-column-exp {
+  text-align: right;
+  width: 12%;
 }
 
 :host ::ng-deep .mat-sort-header-container {
