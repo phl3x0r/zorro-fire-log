@@ -1,0 +1,19 @@
+.date-filter {
+  margin-left: 40px;
+  width: 256px;
+  display: flex;
+  flex-direction: column;
+  height: 112px;
+  padding: 16px;
+  justify-content: space-between;
+}
+
+.datepickers-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+mat-form-field {
+  width: 120px;
+}

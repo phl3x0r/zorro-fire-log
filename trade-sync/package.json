@@ -1,6 +1,31 @@
 {
+  "name": "trade-sync",
+  "version": "0.2.0",
+  "main": "./dist/trade-sync.js",
+  "bin": {
+    "trade-sync": "./dist/trade-sync.js"
+  },
+  "scripts": {
+    "start": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/trade-sync.ts",
+    "create": "npm run build && npm run test",
+    "build": "tsc -p .",
+    "test": "sudo npm i -g && trade-sync",
+    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
+  },
   "dependencies": {
+    "chalk": "^4.0.0",
+    "clear": "^0.1.0",
+    "commander": "^5.1.0",
+    "figlet": "^1.4.0",
     "firebase-admin": "^8.11.0",
+    "path": "^0.12.7",
     "tail": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.5",
+    "@types/tail": "^2.0.0",
+    "nodemon": "^2.0.3",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.8.3"
   }
 }

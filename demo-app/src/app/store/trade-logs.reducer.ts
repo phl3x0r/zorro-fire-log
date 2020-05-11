@@ -13,6 +13,7 @@ import {
   StatisticsModel,
   DataCollection,
   DataSet,
+  DateFilter,
 } from '@zfl/models';
 import {
   addTradeLogs,
@@ -26,6 +27,7 @@ import * as math from 'mathjs';
 
 export interface TradeLogState extends EntityState<TradeLogEntry> {
   filter: LogFilter | null;
+  dateFilter: DateFilter;
   groupSettings: GroupSettings;
   portfolioSize: number;
   positions: TradeLogEntry[];
@@ -36,6 +38,7 @@ export const adapter: EntityAdapter<TradeLogEntry> = createEntityAdapter<
 >();
 export const initialState: TradeLogState = adapter.getInitialState({
   filter: { aliases: {} },
+  dateFilter: { enabled: false, from: null, to: null },
   groupSettings: {
     alias: false,
     algo: true,
@@ -101,6 +104,11 @@ export const selectFilter = createSelector(
   (state: TradeLogState) => state.filter
 );
 
+export const selectDateFilter = createSelector(
+  selectTradeLogState,
+  (state) => state.dateFilter
+);
+
 export const selectGroupSettings = createSelector(
   selectTradeLogState,
   (state) => state.groupSettings
@@ -160,14 +168,22 @@ export const selectTradeLogsData = createSelector(
         o: cur.open.seconds * 1000,
         t: (cur.close.seconds - cur.open.seconds) * 1000,
         x: cur.close.seconds * 1000,
-        y: cur.profit + (acc[groupName][acc[groupName].length - 1]?.y || 0),
+        y:
+          (Math.round(cur.profit * 100) +
+            Math.round(
+              acc[groupName][acc[groupName].length - 1]?.y * 100 || 0
+            )) /
+          100,
         z: cur.profit,
       });
       acc['Total'].push({
         o: cur.open.seconds * 1000,
         t: (cur.close.seconds - cur.open.seconds) * 1000,
         x: cur.close.seconds * 1000,
-        y: cur.profit + (acc['Total'][acc['Total'].length - 1]?.y || 0),
+        y:
+          (Math.round(cur.profit * 100) +
+            Math.round(acc['Total'][acc['Total'].length - 1]?.y * 100 || 0)) /
+          100,
         z: cur.profit,
       });
       return acc;
@@ -209,7 +225,7 @@ export const selectTradeLogStatistics = createSelector(
         const cagr = (ar + portfolioSize) / portfolioSize - 1;
         const vol = (std * Math.sqrt(252)) / portfolioSize;
         const mr = pnl / dataset.length;
-        const sharpe = mr / std;
+        const sharpe = Math.sqrt(dataset.length) * (mr / std);
         const exp = getExposure(dataset);
         return <StatisticsModel>{
           name: key,

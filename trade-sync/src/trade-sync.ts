@@ -1,31 +1,27 @@
+#!/usr/bin/env node
 import * as admin from "firebase-admin";
 import { Tail } from "tail";
 import { createHash } from "crypto";
 
 interface TradeLog {
   path: string;
-  alias?: string;
+  alias: string;
+  schema: string;
+}
+
+interface Schema {
+  [key: string]: "string" | "int" | "float" | "date";
 }
 
 interface Config {
-  firebase: { databaseURL: string };
+  firebase: { databaseURL: string; credential: { [key: string]: string } };
   tradeLogs: TradeLog[];
   positionLogs: TradeLog[];
+  schemas: { [key: string]: Schema };
 }
 
 interface LogEntry {
-  name: string;
-  type: string;
-  asset: string;
-  id: number;
-  lots: number;
-  open: admin.firestore.Timestamp;
-  close: admin.firestore.Timestamp;
-  entry: number;
-  exit: number;
-  profit: number;
-  roll: number;
-  exitType: string;
+  [key: string]: any;
 }
 
 interface PositionLogEntry {
@@ -37,14 +33,35 @@ enum LogType {
   PositionLog = "positionLog",
 }
 
-const config: Config = require("./config.json");
-const serviceAccount = require("./serviceAccountKey.json");
+let fs = require("fs");
+let path = require("path");
+const chalk = require("chalk");
+const clear = require("clear");
+const figlet = require("figlet");
+const program = require("commander");
+clear();
+console.log(
+  chalk.green(figlet.textSync("trade-sync", { horizontalLayout: "full" }))
+);
+program
+  .version("0.2.0")
+  .description("A script for syncing logfiles to firebase")
+  .option("-b, --fromBeginning", "Read files from first line")
+  .option("-c, --config <file>", "config file", "trade-sync.config.json")
+  .parse(process.argv);
 
-const args = process.argv.slice(2);
+let config: Config = <Config>{};
+let configPath = path.join(__dirname, "./", program.config);
+if (fs.existsSync(configPath)) {
+  config = require(configPath);
+} else {
+  console.error(chalk.red(`config file ${configPath} not found`));
+  process.exit(1);
+}
 
 admin.initializeApp({
-  ...config.firebase,
-  credential: admin.credential.cert(serviceAccount),
+  databaseURL: config.firebase.databaseURL,
+  credential: admin.credential.cert(config.firebase.credential),
 });
 
 if (config.tradeLogs && config.tradeLogs.length) {
@@ -62,29 +79,33 @@ function writeLogFile(logType: LogType) {
   const logfiles =
     logType === LogType.TradeLog ? config.tradeLogs : config.positionLogs;
   logfiles.forEach((tl) => {
+    const schema = config.schemas[tl.schema];
+    if (!schema) {
+      console.error(chalk.red(`Schema [${schema}] not found!`));
+    }
     const tail = new Tail(tl.path, {
       flushAtEOF: true,
-      fromBeginning: args.includes("--fromBeginning"),
+      fromBeginning: !!program.fromBeginning,
     });
     if (logType === LogType.TradeLog) {
-      onTradeLogLine(tail, tl);
+      onTradeLogLine(tail, tl, schema);
     } else if (logType === LogType.PositionLog) {
-      onPositionLogLine(tail, tl);
+      onPositionLogLine(tail, tl, schema);
     }
   });
 }
 
 // hande lines from trade logs
-function onTradeLogLine(tail: Tail, tl: TradeLog) {
+function onTradeLogLine(tail: Tail, tl: TradeLog, schema: Schema) {
   tail.on("line", (line: string) => {
     if (line) {
       const parts = line.split(",");
-      if (parts.length === 12 && parts[0].toLowerCase() !== "name") {
-        const entry: LogEntry = mapEntry(parts);
+      if (validateLine(parts, schema)) {
+        const entry: LogEntry = mapEntry(parts, schema);
         const fbId = createHash("md5").update(line).digest("hex");
         const collection = tl.alias;
         writeToFirestore(collection, fbId, entry);
-      } else invalidLine(parts);
+      }
     }
   });
   tail.on("error", function (error) {
@@ -93,8 +114,8 @@ function onTradeLogLine(tail: Tail, tl: TradeLog) {
 }
 
 // hande lines from position logs
-function onPositionLogLine(tail: Tail, tl: TradeLog) {
-  const entry = { positions: [] };
+function onPositionLogLine(tail: Tail, tl: TradeLog, schema: Schema) {
+  const entry: { positions: LogEntry[] } = { positions: [] };
   let lastWriteEmpty = false;
   tail.on("line", (line: string) => {
     if (line) {
@@ -113,15 +134,33 @@ function onPositionLogLine(tail: Tail, tl: TradeLog) {
         }
       } else {
         const parts = line.split(",");
-        if (parts.length === 12 && parts[0].toLowerCase() !== "name") {
-          entry.positions.push(mapEntry(parts));
-        } else invalidLine(parts);
+        if (validateLine(parts, schema)) {
+          entry.positions.push(mapEntry(parts, schema));
+        }
       }
     }
   });
   tail.on("error", function (error) {
     console.log("ERROR: ", error);
   });
+}
+
+function validateLine(parts: string[], schema: Schema) {
+  const schemaKeys = Object.keys(schema);
+  if (
+    parts.length === schemaKeys.length &&
+    parts[0].toLowerCase() !== schemaKeys[0].toLowerCase()
+  ) {
+    return true;
+  } else {
+    console.log(
+      `Line skipped: ${
+        parts.length === schemaKeys.length
+          ? "first line"
+          : `parts[${parts.length}] [${parts}] do no match schema[${schemaKeys.length}] [${schemaKeys}]`
+      }`
+    );
+  }
 }
 
 function invalidLine(parts: string[]) {
@@ -156,23 +195,43 @@ function writeToFirestore(
       }
     })
     .catch(function (error) {
-      console.error("Error writing trade log: ", error);
+      console.error(chalk.red("Error writing trade log: ", error));
     });
 }
 
-function mapEntry(parts: string[]): LogEntry {
-  return {
-    name: parts[0],
-    type: parts[1],
-    asset: parts[2],
-    id: Number.parseInt(parts[3]),
-    lots: Number.parseFloat(parts[4]),
-    open: admin.firestore.Timestamp.fromDate(new Date(parts[5])),
-    close: admin.firestore.Timestamp.fromDate(new Date(parts[6])),
-    entry: Number.parseFloat(parts[7]),
-    exit: Number.parseFloat(parts[8]),
-    profit: Number.parseFloat(parts[9]),
-    roll: Number.parseFloat(parts[10]),
-    exitType: parts[11],
-  };
+function mapEntry(parts: string[], schema: Schema): LogEntry {
+  const mappings = Object.entries(schema);
+  const mappedParts = parts.map((part, index) =>
+    mapPart(part, mappings[index])
+  );
+
+  return mappedParts.reduce((acc, cur) => {
+    if (cur) {
+      acc[cur[0]] = cur[1];
+    }
+    return acc;
+  }, <LogEntry>{});
+}
+
+function mapPart(
+  part: string,
+  c: [string, "string" | "int" | "float" | "date"]
+): [string, string | number | admin.firestore.Timestamp] | null {
+  const name = c[0];
+  const type = c[1];
+
+  if (type === "string") {
+    return [name, String(part)];
+  }
+  if (type === "int") {
+    return [name, Number.parseInt(part)];
+  }
+  if (type === "float") {
+    return [name, Number.parseFloat(part)];
+  }
+  if (type === "date") {
+    return [name, admin.firestore.Timestamp.fromDate(new Date(part))];
+  }
+  console.warn(chalk.yellow(`Mapping type [${type}] not found in schema!`));
+  return null;
 }

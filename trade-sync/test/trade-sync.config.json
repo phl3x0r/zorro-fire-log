@@ -1,0 +1,47 @@
+{
+  "firebase": {
+    "databaseURL": "https://zorro-fire-log.firebaseio.com",
+    "credential": {
+      "type": "service_account",
+      "project_id": "<your project_id>",
+      "private_key_id": "<your private_key_id>",
+      "private_key": "<your private_key>",
+      "client_email": "<your client_email>",
+      "client_id": "<your client_id>",
+      "auth_uri": "<your auth_uri>",
+      "token_uri": "<your token_uri>",
+      "auth_provider_x509_cert_url": "<your auth_provider_x509_cert_url>",
+      "client_x509_cert_url": "<your client_x509_cert_url>"
+    }
+  },
+  "tradeLogs": [
+    {
+      "path": "./test/demotrades.csv",
+      "alias": "demo-trades",
+      "schema": "mySchema"
+    }
+  ],
+  "positionLogs": [
+    {
+      "path": "./test/positions.csv",
+      "alias": "demo-positions",
+      "schema": "mySchema"
+    }
+  ],
+  "schemas": {
+    "mySchema": {
+      "name": "string",
+      "type": "string",
+      "asset": "string",
+      "id": "int",
+      "lots": "float",
+      "open": "date",
+      "close": "date",
+      "entry": "float",
+      "exit": "float",
+      "profit": "float",
+      "roll": "float",
+      "exitType": "string"
+    }
+  }
+}

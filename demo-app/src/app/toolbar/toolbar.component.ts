@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { GroupSettings } from '@zfl/models';
+import { GroupSettings, DateFilter } from '@zfl/models';
 import { TradeLogsFacade } from '../store/trade-logs.facade';
 import { Observable } from 'rxjs';
 
@@ -14,6 +14,7 @@ export class ToolbarComponent implements OnInit {
   groupSettings$: Observable<GroupSettings> = this.tradeLogsFacade
     .groupSettings$;
   portfolioSize$: Observable<number> = this.tradeLogsFacade.porfolioSize$;
+  dateFilter$: Observable<DateFilter> = this.tradeLogsFacade.dateFilter$;
   ngOnInit(): void {}
 
   updateGroupSettings(groupSettings: GroupSettings) {
@@ -22,5 +23,9 @@ export class ToolbarComponent implements OnInit {
 
   updatePortfolioSize(portfolioSize: number) {
     this.tradeLogsFacade.updatePortfolioSize(portfolioSize);
+  }
+
+  updateDateFilter(dateFilter: DateFilter) {
+    this.tradeLogsFacade.updateDateFiler(dateFilter);
   }
 }

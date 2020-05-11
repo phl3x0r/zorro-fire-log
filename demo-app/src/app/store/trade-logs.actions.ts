@@ -1,5 +1,10 @@
 import { createAction, props } from '@ngrx/store';
-import { TradeLogEntry, LogFilter, GroupSettings } from '@zfl/models';
+import {
+  TradeLogEntry,
+  LogFilter,
+  GroupSettings,
+  DateFilter,
+} from '@zfl/models';
 
 export const addTradeLogs = createAction(
   '[TradeLogs] Add trade log entries',
@@ -7,12 +12,17 @@ export const addTradeLogs = createAction(
 );
 
 export const updateFilter = createAction(
-  '[TradeLogs] Update filter',
+  '[Filters] Update filter',
   props<{ filter: LogFilter }>()
 );
 
+export const updateDateFilter = createAction(
+  '[Filters] Update date filter',
+  props<{ dateFilter: DateFilter }>()
+);
+
 export const updateGroupSettings = createAction(
-  '[TradeLogs] Update group settings',
+  '[Filters] Update group settings',
   props<{ groupSettings: GroupSettings }>()
 );
 
