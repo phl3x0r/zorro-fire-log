@@ -44,14 +44,14 @@ console.log(
   chalk.green(figlet.textSync("trade-sync", { horizontalLayout: "full" }))
 );
 program
-  .version("0.2.0")
+  .version("0.2.1")
   .description("A script for syncing logfiles to firebase")
   .option("-b, --fromBeginning", "Read files from first line")
   .option("-c, --config <file>", "config file", "trade-sync.config.json")
   .parse(process.argv);
 
 let config: Config = <Config>{};
-let configPath = path.join(__dirname, "./", program.config);
+let configPath = path.join(process.cwd(), program.config);
 if (fs.existsSync(configPath)) {
   config = require(configPath);
 } else {
