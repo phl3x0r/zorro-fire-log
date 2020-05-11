@@ -1,15 +1,18 @@
 {
   "name": "trade-sync",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "./dist/trade-sync.js",
   "bin": {
     "trade-sync": "./dist/trade-sync.js"
   },
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "start": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/trade-sync.ts",
     "create": "npm run build && npm run test",
     "build": "tsc -p .",
-    "test": "sudo npm i -g && trade-sync",
+    "test": "npm i -g && trade-sync",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
   },
   "dependencies": {
