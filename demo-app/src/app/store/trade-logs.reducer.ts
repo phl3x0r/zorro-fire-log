@@ -168,14 +168,22 @@ export const selectTradeLogsData = createSelector(
         o: cur.open.seconds * 1000,
         t: (cur.close.seconds - cur.open.seconds) * 1000,
         x: cur.close.seconds * 1000,
-        y: cur.profit + (acc[groupName][acc[groupName].length - 1]?.y || 0),
+        y:
+          (Math.round(cur.profit * 100) +
+            Math.round(
+              acc[groupName][acc[groupName].length - 1]?.y * 100 || 0
+            )) /
+          100,
         z: cur.profit,
       });
       acc['Total'].push({
         o: cur.open.seconds * 1000,
         t: (cur.close.seconds - cur.open.seconds) * 1000,
         x: cur.close.seconds * 1000,
-        y: cur.profit + (acc['Total'][acc['Total'].length - 1]?.y || 0),
+        y:
+          (Math.round(cur.profit * 100) +
+            Math.round(acc['Total'][acc['Total'].length - 1]?.y * 100 || 0)) /
+          100,
         z: cur.profit,
       });
       return acc;
