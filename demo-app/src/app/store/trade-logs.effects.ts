@@ -12,6 +12,7 @@ import {
   delay,
   switchMap,
   take,
+  filter,
 } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { TradeLogEntry, PositionLog } from '@zfl/models';
@@ -136,16 +137,18 @@ export class TradeLogEffects {
             .doc<PositionLog>(alias)
             .valueChanges()
             .pipe(
+              filter((x) => !!x),
               map((pLog) =>
                 addPositions({
                   alias,
-                  positions: pLog.positions
+                  positions: (pLog.positions || [])
                     .map((tle) => ({ ...tle, alias }))
                     .reduce((acc, val) => {
                       return acc.concat(val);
                     }, []),
                 })
-              )
+              ),
+              tap(console.log)
             )
         )
       )
