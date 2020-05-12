@@ -28,7 +28,6 @@ void writePnL(string fileName, int minHour)
     }
 
 	if((ldow() <= 5) and (lhour() >= minHour) and (day() != lastDay)) {
-        var PnL = (Equity - oldPnL);        
         vars fp = fopen(fileName, "a");
         fprintf(fp, "%04i-%02i-%02i,%.2f\n", 
             year(), 
