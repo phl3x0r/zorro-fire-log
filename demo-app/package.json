@@ -29,7 +29,7 @@
     "angular-highcharts": "^9.0.9",
     "angular-resize-event": "^1.2.1",
     "firebase": "^7.14.2-0",
-    "highcharts": "^8.0.4",
+    "highcharts": "^9.0.0",
     "mathjs": "^6.6.5",
     "ngrx": "0.0.1-security",
     "ngrx-store-persist": "^1.0.20",
